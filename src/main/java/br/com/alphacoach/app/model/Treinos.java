@@ -1,7 +1,9 @@
 package br.com.alphacoach.app.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -11,20 +13,21 @@ import java.util.Objects;
 public class Treinos {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(length = 100)
     private String nome;
     @ManyToOne
     @JoinColumn(name = "alunoId", nullable = false)
     private Aluno aluno;
     @Column
-    private Date dataCriacao;
+    private LocalDate dataCriacao;
     @Column
-    private boolean status;
+    private Boolean status;
     @OneToMany(mappedBy = "treino", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("treino")
     private List<ExercicioTreino> exercicios;
 
-    public Treinos(long id, String nome, Aluno aluno, Date dataCriacao, List<ExercicioTreino> exercicios) {
+    public Treinos(Long id, String nome, Aluno aluno, LocalDate dataCriacao, List<ExercicioTreino> exercicios) {
         this.id = id;
         this.nome = nome;
         this.aluno = aluno;
@@ -36,11 +39,11 @@ public class Treinos {
     public Treinos() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -60,11 +63,11 @@ public class Treinos {
         this.aluno = aluno;
     }
 
-    public Date getDataCriacao() {
+    public LocalDate getDataCriacao() {
         return dataCriacao;
     }
 
-    public void setDataCriacao(Date dataCriacao) {
+    public void setDataCriacao(LocalDate dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 

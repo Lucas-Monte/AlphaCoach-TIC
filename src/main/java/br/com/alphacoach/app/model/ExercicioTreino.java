@@ -1,5 +1,6 @@
 package br.com.alphacoach.app.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
@@ -7,29 +8,30 @@ import jakarta.persistence.*;
 public class ExercicioTreino {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "treinoId", nullable = false)
+    @JsonIgnoreProperties("exercicios")
     private Treinos treino;
     @ManyToOne
     @JoinColumn(name = "exercicioId", nullable = false)
     private Exercicios exercicio;
     @Column
-    private float potencia;
+    private Float potencia;
     @Column
-    private float intensidade;
+    private Float intensidade;
     @Column
-    private int series;
+    private Integer series;
     @Column
-    private int repeticoes;
+    private Integer repeticoes;
     @Column(length = 20)
     private String carga;
     @Column
-    private int tempoDescanso;
+    private Integer tempoDescanso;
     @Column
-    private boolean status;
+    private Boolean status;
 
-    public ExercicioTreino(long id, Treinos treino, Exercicios exercicio, float potencia, float intensidade, int series, int repeticoes, String carga, int tempoDescanso) {
+    public ExercicioTreino(Long id, Treinos treino, Exercicios exercicio, Float potencia, Float intensidade, Integer series, Integer repeticoes, String carga, Integer tempoDescanso) {
         this.id = id;
         this.treino = treino;
         this.exercicio = exercicio;
@@ -45,11 +47,11 @@ public class ExercicioTreino {
     public ExercicioTreino() {
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -69,35 +71,35 @@ public class ExercicioTreino {
         this.exercicio = exercicio;
     }
 
-    public float getPotencia() {
+    public Float getPotencia() {
         return potencia;
     }
 
-    public void setPotencia(float potencia) {
+    public void setPotencia(Float potencia) {
         this.potencia = potencia;
     }
 
-    public float getIntensidade() {
+    public Float getIntensidade() {
         return intensidade;
     }
 
-    public void setIntensidade(float intensidade) {
+    public void setIntensidade(Float intensidade) {
         this.intensidade = intensidade;
     }
 
-    public int getSeries() {
+    public Integer getSeries() {
         return series;
     }
 
-    public void setSeries(int series) {
+    public void setSeries(Integer series) {
         this.series = series;
     }
 
-    public int getRepeticoes() {
+    public Integer getRepeticoes() {
         return repeticoes;
     }
 
-    public void setRepeticoes(int repeticoes) {
+    public void setRepeticoes(Integer repeticoes) {
         this.repeticoes = repeticoes;
     }
 
@@ -109,11 +111,11 @@ public class ExercicioTreino {
         this.carga = carga;
     }
 
-    public int getTempoDescanso() {
+    public Integer getTempoDescanso() {
         return tempoDescanso;
     }
 
-    public void setTempoDescanso(int tempoDescanso) {
+    public void setTempoDescanso(Integer tempoDescanso) {
         this.tempoDescanso = tempoDescanso;
     }
 

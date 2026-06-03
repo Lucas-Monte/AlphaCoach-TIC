@@ -1,5 +1,6 @@
 package br.com.alphacoach.app.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.websocket.ClientEndpoint;
@@ -31,6 +32,7 @@ public class Aluno {
     @JoinColumn(name = "planoId")
     private Planos plano;
     @OneToMany(mappedBy = "aluno")
+    @JsonIgnoreProperties("aluno")
     private List<AgendaTreino> agenda;
 
     public Aluno(Long id, String nome, String email, String cpf, String endereco, String tipoCliente, Boolean ativo, String telefone, Planos plano) {
