@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.websocket.ClientEndpoint;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,6 +22,8 @@ public class Aluno {
     private String email;
     @Column (unique = true, length = 15)
     private String cpf;
+    @Column (nullable = false)
+    private LocalDate dataNascimento;
     @Column (length = 500)
     private String endereco;
     @Column (nullable = false, length = 15)
@@ -31,20 +35,27 @@ public class Aluno {
     @ManyToOne
     @JoinColumn(name = "planoId")
     private Planos plano;
+    @Column (length = 100)
+    private String objetivo;
+    @Column (length = 500)
+    private String anamnese;
     @OneToMany(mappedBy = "aluno")
     @JsonIgnoreProperties("aluno")
     private List<AgendaTreino> agenda;
 
-    public Aluno(Long id, String nome, String email, String cpf, String endereco, String tipoCliente, Boolean ativo, String telefone, Planos plano) {
+    public Aluno(Long id, String nome, String email, String cpf, LocalDate dataNascimento, String endereco, String tipoCliente, Boolean ativo, String telefone, Planos plano, String objetivo, String anamnese) {
         this.id = id;
         this.nome = nome;
         this.email = email;
         this.cpf = cpf;
+        this.dataNascimento = dataNascimento;
         this.endereco = endereco;
         this.tipoCliente = tipoCliente;
         this.ativo = ativo;
         this.telefone = telefone;
         this.plano = plano;
+        this.objetivo = objetivo;
+        this.anamnese = anamnese;
     }
 
     public Aluno() {
@@ -86,6 +97,18 @@ public class Aluno {
 
     public void setCpf(String cpf) {
         this.cpf = cpf;
+    }
+
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
     }
 
     public Long getId() {
@@ -142,6 +165,22 @@ public class Aluno {
 
     public void setPlano(Planos plano) {
         this.plano = plano;
+    }
+
+    public String getObjetivo() {
+        return objetivo;
+    }
+
+    public void setObjetivo(String objetivo) {
+        this.objetivo = objetivo;
+    }
+
+    public String getAnamnese() {
+        return anamnese;
+    }
+
+    public void setAnamnese(String anamnese) {
+        this.anamnese = anamnese;
     }
 
     public Planos mudarPlano(Planos plano, Long id) {

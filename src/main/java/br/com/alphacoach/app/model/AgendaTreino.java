@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -18,11 +19,11 @@ public class AgendaTreino {
     @JsonIgnoreProperties("agenda")
     private Aluno aluno;
     @Column(nullable = false)
-    private LocalDate data;
+    private LocalDateTime data;
     @Column
     private Boolean checkIn;
 
-    public AgendaTreino(Long id, Aluno aluno, LocalDate data) {
+    public AgendaTreino(Long id, Aluno aluno, LocalDateTime data) {
         this.id = id;
         this.aluno = aluno;
         this.data = data;
@@ -48,11 +49,11 @@ public class AgendaTreino {
         this.aluno = aluno;
     }
 
-    public LocalDate getData() {
+    public LocalDateTime getData() {
         return data;
     }
 
-    public void setData(LocalDate data) {
+    public void setData(LocalDateTime data) {
         this.data = data;
     }
 

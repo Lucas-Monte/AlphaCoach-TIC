@@ -44,11 +44,12 @@ public class AgendaTreinoService {
     }
 
     public AgendaTreino alterar(AgendaTreino novo, Long id) {
-        if (agendaRepository.existsById(id)) {
-            novo.setId(id);
-            return agendaRepository.save(novo);
-        }
-        return null;
+        AgendaTreino agenda = agendaRepository.findById(id).orElseThrow(() -> new RuntimeException("Aula não encontrada!"));
+        if (novo.getAluno() != null) agenda.setAluno(novo.getAluno());
+        if (novo.getData() != null) agenda.setData(novo.getData());
+        if (novo.isCheckIn() != null) agenda.setCheckIn(novo.isCheckIn());
+
+        return agendaRepository.save(agenda);
     }
 
     public boolean remover(Long id) {

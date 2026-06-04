@@ -44,11 +44,18 @@ public class AlunoService {
     }
 
     public Aluno alterarAluno(Aluno novo, Long id) {
-        if(repository.existsById(id)) {
-            novo.setId(id);
-            return repository.save(novo);
-        }
-        return null;
+        Aluno procurado = repository.findById(id).orElseThrow(() -> new RuntimeException("Aluno não encontrado!"));
+         if (novo.getNome() != null) procurado.setNome(novo.getNome());
+         if (novo.getEmail() != null) procurado.setEmail(novo.getEmail());
+         if (novo.getCpf() != null) procurado.setCpf(novo.getCpf());
+         if (novo.getDataNascimento() != null) procurado.setDataNascimento(novo.getDataNascimento());
+         if (novo.getEndereco() != null) procurado.setEndereco(novo.getEndereco());
+         if (novo.getTipoCliente() != null) procurado.setTipoCliente(novo.getTipoCliente());
+         if (novo.getAtivo() != null) procurado.setAtivo(novo.getAtivo());
+         if (novo.getPlano() != null) procurado.setPlano(novo.getPlano());
+         if (novo.getObjetivo() != null) procurado.setObjetivo(novo.getObjetivo());
+         if (novo.getAnamnese() != null) procurado.setAnamnese(novo.getAnamnese());
+         return repository.save(procurado);
     }
 
     public boolean remover(Long id) {
