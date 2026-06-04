@@ -114,11 +114,11 @@ spring.jpa.show-sql=true
 
 ---
 
-#### DELETE — Desativar aluno (soft delete)
+#### DELETE — Desativar aluno
 ```
 DELETE /alunos/{id}
 ```
-O aluno não é removido do banco, apenas o campo `ativo` é definido como `false`.
+O aluno é removido do banco.
 
 ---
 
@@ -212,7 +212,7 @@ O aluno não é removido do banco, apenas o campo `ativo` é definido como `fals
 
 ---
 
-#### DELETE — Desativar exercício (soft delete)
+#### DELETE — Desativar exercício
 ```
 DELETE /exercicios/{id}
 ```
