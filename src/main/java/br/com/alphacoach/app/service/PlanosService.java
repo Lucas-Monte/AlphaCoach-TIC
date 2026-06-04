@@ -29,11 +29,14 @@ public class PlanosService {
     }
 
     public Planos alterar(Planos plano, Long id) {
-        if (repository.existsById(id)) {
-            plano.setId(id);
-            return repository.save(plano);
-        }
-        return null;
+        Planos procurado = repository.findById(id).orElseThrow(() -> new RuntimeException("Plano não encontrado!"));
+        if (plano.isAtivo() != null) procurado.setAtivo(plano.isAtivo());
+        if (plano.getDescricao() != null) procurado.setDescricao(plano.getDescricao());
+        if (plano.getDuracaoMeses() != null) procurado.setDuracaoMeses(plano.getDuracaoMeses());
+        if (plano.getTipoPlano() != null) procurado.setTipoPlano(plano.getTipoPlano());
+        if (plano.getValor() != null) procurado.setValor(plano.getValor());
+
+        return repository.save(procurado);
     }
 
     public boolean remover(Long id) {

@@ -32,11 +32,13 @@ public class ExerciciosService {
     }
 
     public Exercicios alterar(Exercicios exercicio, Long id) {
-        if (exerciciosRepository.existsById(id)) {
-            exercicio.setId(id);
-            return exerciciosRepository.save(exercicio);
-        }
-        return null;
+        Exercicios procurado = exerciciosRepository.findById(id).orElseThrow(() -> new RuntimeException("Exercicio não encontrado!"));
+        if (exercicio.getNome() != null) procurado.setNome(exercicio.getNome());
+        if (exercicio.getDescricao() != null) procurado.setDescricao(exercicio.getDescricao());
+        if (exercicio.getAtivo() != null) procurado.setAtivo(exercicio.getAtivo());
+        if (exercicio.getLinkVideo() != null) procurado.setLinkVideo(exercicio.getLinkVideo());
+
+        return exerciciosRepository.save(procurado);
     }
 
     public boolean remover(Long id) {

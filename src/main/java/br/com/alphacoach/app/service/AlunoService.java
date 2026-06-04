@@ -52,6 +52,7 @@ public class AlunoService {
          if (novo.getEndereco() != null) procurado.setEndereco(novo.getEndereco());
          if (novo.getTipoCliente() != null) procurado.setTipoCliente(novo.getTipoCliente());
          if (novo.getAtivo() != null) procurado.setAtivo(novo.getAtivo());
+         if (novo.getTelefone() != null) procurado.setTelefone(novo.getTelefone());
          if (novo.getPlano() != null) procurado.setPlano(novo.getPlano());
          if (novo.getObjetivo() != null) procurado.setObjetivo(novo.getObjetivo());
          if (novo.getAnamnese() != null) procurado.setAnamnese(novo.getAnamnese());

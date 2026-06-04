@@ -119,11 +119,11 @@ public class ExercicioTreino {
         this.tempoDescanso = tempoDescanso;
     }
 
-    public boolean isStatus() {
+    public Boolean isStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 

@@ -18,11 +18,16 @@ public class ExercicioTreinoService {
     }
 
     public ExercicioTreino alterar(ExercicioTreino exercicioTreino, Long id) {
-        if (exercicioTreinoRepository.existsById(id)) {
-            exercicioTreino.setId(id);
-            return exercicioTreinoRepository.save(exercicioTreino);
-        }
-        return null;
+        ExercicioTreino procurado = exercicioTreinoRepository.findById(id).orElseThrow(() -> new RuntimeException("Exercicio não adicionado ao treino!"));
+        if (exercicioTreino.getCarga() != null) procurado.setCarga(exercicioTreino.getCarga());
+        if (exercicioTreino.getIntensidade() != null) procurado.setIntensidade(exercicioTreino.getIntensidade());
+        if (exercicioTreino.getPotencia() != null) procurado.setPotencia(exercicioTreino.getPotencia());
+        if (exercicioTreino.getRepeticoes() != null) procurado.setRepeticoes(exercicioTreino.getRepeticoes());
+        if (exercicioTreino.getSeries() != null) procurado.setSeries(exercicioTreino.getSeries());
+        if (exercicioTreino.isStatus() != null) procurado.setStatus(exercicioTreino.isStatus());
+        if (exercicioTreino.getTempoDescanso() != null) procurado.setTempoDescanso(exercicioTreino.getTempoDescanso());
+
+        return exercicioTreinoRepository.save(procurado);
     }
 
     public List<ExercicioTreino> listar() {

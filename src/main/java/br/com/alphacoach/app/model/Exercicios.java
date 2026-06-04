@@ -15,12 +15,15 @@ public class Exercicios {
     private String descricao;
     @Column
     private Boolean ativo;
+    @Column (length = 500)
+    private String linkVideo;
 
-    public Exercicios(Long id, String nome, String descricao) {
+    public Exercicios(Long id, String nome, String descricao, String linkVideo) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
         this.ativo = true;
+        this.linkVideo = linkVideo;
     }
 
     public Exercicios() {
@@ -54,5 +57,19 @@ public class Exercicios {
         this.ativo = false;
     }
 
+    public Boolean getAtivo() {
+        return ativo;
+    }
 
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    public String getLinkVideo() {
+        return linkVideo;
+    }
+
+    public void setLinkVideo(String linkVideo) {
+        this.linkVideo = linkVideo;
+    }
 }

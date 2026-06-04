@@ -63,11 +63,13 @@ public class TreinosService {
     }
 
     public Treinos alterar(Treinos treino, Long id) {
-        if (treinosRepository.existsById(id)) {
-            treino.setId(id);
-            return treinosRepository.save(treino);
-        }
-        return null;
+        Treinos procurado = treinosRepository.findById(id).orElseThrow(() -> new RuntimeException("Treino não encontrado!"));
+        if (treino.getDataCriacao() != null) procurado.setDataCriacao(treino.getDataCriacao());
+        if (treino.getNome() != null) procurado.setNome(treino.getNome());
+        if (treino.isStatus() != null) procurado.setStatus(treino.isStatus());
+        if (treino.getAluno() != null) procurado.setAluno(treino.getAluno());
+
+        return treinosRepository.save(procurado);
     }
 
     public boolean remover(Long id) {
