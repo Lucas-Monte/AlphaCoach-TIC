@@ -2,6 +2,7 @@ package br.com.alphacoach.app.service;
 
 import br.com.alphacoach.app.model.Exercicios;
 import br.com.alphacoach.app.repository.ExerciciosRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public class ExerciciosService {
         this.exerciciosRepository = exerciciosRepository;
     }
 
+    @Transactional
     public Exercicios criar(Exercicios exercicio) {
         if (exerciciosRepository.existsByNome(exercicio.getNome())) {
             throw new IllegalArgumentException("Exercício já cadastrado!");
@@ -31,6 +33,7 @@ public class ExerciciosService {
         return exerciciosRepository.findById(id);
     }
 
+    @Transactional
     public Exercicios alterar(Exercicios exercicio, Long id) {
         Exercicios procurado = exerciciosRepository.findById(id).orElseThrow(() -> new RuntimeException("Exercicio não encontrado!"));
         if (exercicio.getNome() != null) procurado.setNome(exercicio.getNome());
@@ -41,6 +44,7 @@ public class ExerciciosService {
         return exerciciosRepository.save(procurado);
     }
 
+    @Transactional
     public boolean remover(Long id) {
         if (exerciciosRepository.existsById(id)) {
             exerciciosRepository.deleteById(id);

@@ -4,6 +4,7 @@ import br.com.alphacoach.app.model.ExercicioTreino;
 import br.com.alphacoach.app.repository.ExercicioTreinoRepository;
 import br.com.alphacoach.app.repository.ExerciciosRepository;
 import ch.qos.logback.core.joran.conditional.IfAction;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class ExercicioTreinoService {
         this.exercicioTreinoRepository = exercicioTreinoRepository;
     }
 
+    @Transactional
     public ExercicioTreino alterar(ExercicioTreino exercicioTreino, Long id) {
         ExercicioTreino procurado = exercicioTreinoRepository.findById(id).orElseThrow(() -> new RuntimeException("Exercicio não adicionado ao treino!"));
         if (exercicioTreino.getCarga() != null) procurado.setCarga(exercicioTreino.getCarga());
@@ -38,6 +40,7 @@ public class ExercicioTreinoService {
         return exercicioTreinoRepository.findById(id);
     }
 
+    @Transactional
     public boolean remover(Long id) {
         if (exercicioTreinoRepository.existsById(id)) {
             exercicioTreinoRepository.deleteById(id);

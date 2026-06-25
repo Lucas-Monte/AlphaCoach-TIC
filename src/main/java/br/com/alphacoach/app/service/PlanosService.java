@@ -2,6 +2,7 @@ package br.com.alphacoach.app.service;
 
 import br.com.alphacoach.app.model.Planos;
 import br.com.alphacoach.app.repository.PlanosRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class PlanosService {
         this.repository = repository;
     }
 
+    @Transactional
     public Planos criar(Planos plano) {
         return repository.save(plano);
     }
@@ -28,6 +30,7 @@ public class PlanosService {
         return repository.findById(id);
     }
 
+    @Transactional
     public Planos alterar(Planos plano, Long id) {
         Planos procurado = repository.findById(id).orElseThrow(() -> new RuntimeException("Plano não encontrado!"));
         if (plano.isAtivo() != null) procurado.setAtivo(plano.isAtivo());
@@ -39,6 +42,7 @@ public class PlanosService {
         return repository.save(procurado);
     }
 
+    @Transactional
     public boolean remover(Long id) {
         if (repository.existsById(id)) {
             repository.deleteById(id);

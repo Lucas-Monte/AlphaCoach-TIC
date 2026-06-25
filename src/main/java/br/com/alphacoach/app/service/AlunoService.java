@@ -4,6 +4,7 @@ import br.com.alphacoach.app.model.Aluno;
 import br.com.alphacoach.app.model.Planos;
 import br.com.alphacoach.app.repository.AlunoRepository;
 import br.com.alphacoach.app.repository.PlanosRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class AlunoService {
         this.repository = repository;
     }
 
+    @Transactional
     public Aluno salvar(Aluno aluno) {
         if (repository.existsByCpf(aluno.getCpf())) {
             throw new IllegalArgumentException("Aluno já cadastrado!");
@@ -43,6 +45,7 @@ public class AlunoService {
         return repository.findById(id);
     }
 
+    @Transactional
     public Aluno alterarAluno(Aluno novo, Long id) {
         Aluno procurado = repository.findById(id).orElseThrow(() -> new RuntimeException("Aluno não encontrado!"));
          if (novo.getNome() != null) procurado.setNome(novo.getNome());
@@ -59,6 +62,7 @@ public class AlunoService {
          return repository.save(procurado);
     }
 
+    @Transactional
     public boolean remover(Long id) {
         if (repository.existsById(id)) {
             repository.deleteById(id);

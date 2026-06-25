@@ -8,6 +8,7 @@ import br.com.alphacoach.app.repository.AlunoRepository;
 import br.com.alphacoach.app.repository.ExercicioTreinoRepository;
 import br.com.alphacoach.app.repository.ExerciciosRepository;
 import br.com.alphacoach.app.repository.TreinosRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class TreinosService {
         this.exercicioTreinoRepository = exercicioTreinoRepository;
     }
 
+    @Transactional
     public Treinos criar(Treinos treino) {
         if (treino.getAluno() != null && treino.getAluno().getId() != null) {
             Aluno aluno = alunoRepository.findById(treino.getAluno().getId()).orElseThrow(() -> new RuntimeException("Aluno não cadastrado!"));
@@ -62,6 +64,7 @@ public class TreinosService {
         return treinosRepository.findById(id);
     }
 
+    @Transactional
     public Treinos alterar(Treinos treino, Long id) {
         Treinos procurado = treinosRepository.findById(id).orElseThrow(() -> new RuntimeException("Treino não encontrado!"));
         if (treino.getDataCriacao() != null) procurado.setDataCriacao(treino.getDataCriacao());
@@ -72,6 +75,7 @@ public class TreinosService {
         return treinosRepository.save(procurado);
     }
 
+    @Transactional
     public boolean remover(Long id) {
         if (treinosRepository.existsById(id)) {
             treinosRepository.deleteById(id);
