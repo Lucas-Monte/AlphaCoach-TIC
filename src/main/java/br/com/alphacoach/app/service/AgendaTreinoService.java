@@ -55,6 +55,17 @@ public class AgendaTreinoService {
         return agendaRepository.save(agenda);
     }
 
+    public AgendaTreino fazerCheckIn(Long id) {
+        AgendaTreino agenda = agendaRepository.findById(id).orElseThrow(() -> new RuntimeException("Aula não encontrada!"));
+        if (agenda.isCheckIn() == true) {
+            agenda.setCheckIn(false);
+        } else {
+            agenda.setCheckIn(true);
+        }
+
+        return agendaRepository.save(agenda);
+    }
+
     @Transactional
     public boolean remover(Long id) {
         if (agendaRepository.existsById(id)) {

@@ -45,11 +45,26 @@ public class ExerciciosService {
     }
 
     @Transactional
-    public boolean remover(Long id) {
-        if (exerciciosRepository.existsById(id)) {
-            exerciciosRepository.deleteById(id);
-            return true;
+    public Exercicios remover(Long id) {
+        Exercicios exercicio = exerciciosRepository.findById(id).orElseThrow(() -> new RuntimeException("Exercicio não encontrado"));
+        if (exercicio.getAtivo()) {
+            exercicio.setAtivo(false);
         }
-        return false;
+
+        return exercicio;
+    }
+
+    @Transactional
+    public Exercicios recuperarExercicio(Long id) {
+        Exercicios exercicio = exerciciosRepository.findById(id).orElseThrow(() -> new RuntimeException("Exercicio não encontrado"));
+        if (!exercicio.getAtivo()) {
+            exercicio.setAtivo(true);
+        }
+
+        return exercicio;
+    }
+
+    public List<Exercicios> listarAtivos() {
+        return exerciciosRepository.findByAtivoTrue();
     }
 }

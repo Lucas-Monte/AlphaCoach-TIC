@@ -28,10 +28,22 @@ public class ExerciciosController {
         return ResponseEntity.created(uri).body(criado);
     }
 
-    @GetMapping
+    @GetMapping("/todos")
     public ResponseEntity<List<Exercicios>> listar() {
         List<Exercicios> resp = service.listar();
-        return ResponseEntity.ok(resp);
+        if (resp != null) {
+            return ResponseEntity.ok(resp);
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Exercicios>> listarAtivos() {
+        List<Exercicios> resp = service.listarAtivos();
+        if (!resp.isEmpty()) {
+            return ResponseEntity.ok(resp);
+        }
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
@@ -54,10 +66,20 @@ public class ExerciciosController {
         return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/{id}")
+    @PatchMapping("/{id}/remover")
     public ResponseEntity<Exercicios> remover(@PathVariable Long id) {
-        if (service.remover(id)) {
-            return ResponseEntity.noContent().build();
+        Exercicios exercicio = service.remover(id);
+        if (exercicio!=null) {
+            return ResponseEntity.ok(exercicio);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PatchMapping("/{id}/recuperarExercicio")
+    public ResponseEntity<Exercicios> recuperarExercicio(@PathVariable Long id) {
+        Exercicios exercicio = service.recuperarExercicio(id);
+        if (exercicio!=null) {
+            return ResponseEntity.ok(exercicio);
         }
         return ResponseEntity.notFound().build();
     }

@@ -50,6 +50,16 @@ public class AgendaTreinoController {
         return ResponseEntity.notFound().build();
     }
 
+    @PatchMapping("/{id}/checkin")
+    public ResponseEntity<AgendaTreino> fazerCheckin(@PathVariable Long id) {
+        AgendaTreino agenda = service.fazerCheckIn(id);
+        if (agenda != null) {
+            return ResponseEntity.ok(agenda);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<AgendaTreino> remover(@PathVariable Long id) {
         if (service.remover(id)) {

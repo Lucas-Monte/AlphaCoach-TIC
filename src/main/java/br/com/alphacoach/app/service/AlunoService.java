@@ -63,11 +63,24 @@ public class AlunoService {
     }
 
     @Transactional
-    public boolean remover(Long id) {
-        if (repository.existsById(id)) {
-            repository.deleteById(id);
-            return true;
+    public Aluno remover(Long id) {
+        Aluno aluno = repository.findById(id).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+        if (aluno.isAtivo()) {
+            aluno.setAtivo(false);
         }
-        return false;
+        return aluno;
+    }
+
+    @Transactional
+    public Aluno recuperarAluno(Long id) {
+        Aluno aluno = repository.findById(id).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+        if (!aluno.isAtivo()) {
+            aluno.setAtivo(true);
+        }
+        return aluno;
+    }
+
+    public List<Aluno> listarAtivos() {
+        return repository.findByAtivoTrue();
     }
 }

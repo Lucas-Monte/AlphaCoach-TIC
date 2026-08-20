@@ -20,9 +20,18 @@ public class AlunoController {
         this.service = service;
     }
 
-    @GetMapping
+    @GetMapping("/todos")
     public ResponseEntity<List<Aluno>> listar() {
         List<Aluno> resp = service.listar();
+        if (!resp.isEmpty()) {
+            return ResponseEntity.ok(resp);
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Aluno>> listarAtivos() {
+        List<Aluno> resp = service.listarAtivos();
         if (!resp.isEmpty()) {
             return ResponseEntity.ok(resp);
         }
@@ -54,12 +63,21 @@ public class AlunoController {
         return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/{id}")
+    @PatchMapping("/{id}/remover")
     public ResponseEntity<Aluno> removerAluno(@PathVariable Long id) {
-        if (service.remover(id)) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
+        Aluno removido = service.remover(id);
+        if (removido != null) {
+            return ResponseEntity.ok(removido);
         }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PatchMapping("/{id}/recuperarAluno")
+    public ResponseEntity<Aluno> recuperarAluno(@PathVariable Long id) {
+        Aluno recuperado = service.recuperarAluno(id);
+        if (recuperado != null) {
+            return ResponseEntity.ok(recuperado);
+        }
+        return ResponseEntity.notFound().build();
     }
 }
