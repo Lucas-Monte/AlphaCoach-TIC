@@ -11,7 +11,7 @@ import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/alunos")
 public class AlunoController {
     private AlunoService service;

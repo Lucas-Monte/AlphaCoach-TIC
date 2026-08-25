@@ -10,7 +10,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
-@Controller
+@RestController
 @RequestMapping("/planos")
 public class PlanosController {
     private PlanosService service;

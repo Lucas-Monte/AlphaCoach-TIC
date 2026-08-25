@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Spliterator;
 
-@Controller
+@RestController
 @RequestMapping("/exercicios")
 public class ExerciciosController {
     private ExerciciosService service;
