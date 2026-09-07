@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("exercicio-treino")
+@RequestMapping("exerciciotreino")
 public class ExercicioTreinoController {
     private ExercicioTreinoService service;
 

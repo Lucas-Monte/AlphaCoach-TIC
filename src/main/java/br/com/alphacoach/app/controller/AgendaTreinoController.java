@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/agendaTreino")
+@RequestMapping("/agendatreino")
 public class AgendaTreinoController {
     private AgendaTreinoService service;
 
@@ -22,7 +22,7 @@ public class AgendaTreinoController {
     @PostMapping
     public ResponseEntity<AgendaTreino> criar(@RequestBody AgendaTreino agendaTreino) {
         AgendaTreino novo = service.criar(agendaTreino);
-        URI uri = URI.create("/agendaTreino" + novo.getId());
+        URI uri = URI.create("/agendatreino" + novo.getId());
         return ResponseEntity.created(uri).body(novo);
     }
 
