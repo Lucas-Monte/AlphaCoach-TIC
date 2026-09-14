@@ -1,14 +1,15 @@
 package br.com.alphacoach.app.controller;
 
+import br.com.alphacoach.app.dto.request.PlanosRequest;
+import br.com.alphacoach.app.dto.response.PlanosResponse;
 import br.com.alphacoach.app.model.Planos;
 import br.com.alphacoach.app.service.PlanosService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/planos")
@@ -20,9 +21,9 @@ public class PlanosController {
     }
 
     @PostMapping
-    public ResponseEntity<Planos> criar(@RequestBody Planos plano) {
-        Planos novo = service.criar(plano);
-        URI uri = URI.create("/planos" + novo.getId());
+    public ResponseEntity<PlanosResponse> criar(@Valid @RequestBody PlanosRequest resquest) {
+        PlanosResponse novo = service.criar(resquest);
+        URI uri = URI.create("/planos" + novo.plano().getId());
         return ResponseEntity.created(uri).body(novo);
     }
 
@@ -33,22 +34,22 @@ public class PlanosController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Planos>> encontarPorId(@PathVariable Long id) {
-        Optional<Planos> plano = service.encontrarPorId(id);
-        if (!plano.isEmpty()) {
+    public ResponseEntity<PlanosResponse> encontarPorId(@PathVariable Long id) {
+        PlanosResponse plano = service.encontrarPorId(id);
+        if (plano != null) {
             return ResponseEntity.ok(plano);
         }
         return ResponseEntity.notFound().build();
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Planos> alterar(@RequestBody Planos plano, @PathVariable Long id) {
-        Planos novo = service.alterar(plano, id);
+    public ResponseEntity<PlanosResponse> alterar(@Valid @RequestBody PlanosRequest request, @PathVariable Long id) {
+        PlanosResponse novo = service.alterar(request, id);
         return ResponseEntity.ok(novo);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Planos> remover(@PathVariable Long id) {
+    public ResponseEntity<PlanosResponse> remover(@PathVariable Long id) {
         if (service.remover(id)) {
             return ResponseEntity.noContent().build();
         }

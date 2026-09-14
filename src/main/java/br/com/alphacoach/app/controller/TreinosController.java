@@ -1,7 +1,10 @@
 package br.com.alphacoach.app.controller;
 
+import br.com.alphacoach.app.dto.request.TreinosRequest;
+import br.com.alphacoach.app.dto.response.TreinosResponse;
 import br.com.alphacoach.app.model.Treinos;
 import br.com.alphacoach.app.service.TreinosService;
+import jakarta.validation.Valid;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,9 +24,9 @@ public class TreinosController {
     }
 
     @PostMapping
-    public ResponseEntity<Treinos> criar(@RequestBody Treinos treino) {
-        Treinos novo = service.criar(treino);
-        URI uri = URI.create("/treinos/" + novo.getId());
+    public ResponseEntity<TreinosResponse> criar(@Valid @RequestBody TreinosRequest request) {
+        TreinosResponse novo = service.criar(request);
+        URI uri = URI.create("/treinos/" + novo.treino().getId());
         return ResponseEntity.created(uri).body(novo);
     }
 
@@ -34,17 +37,17 @@ public class TreinosController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Treinos>> encontrarPorId(@PathVariable Long id) {
-        Optional<Treinos> resp = service.econtrarPorId(id);
-        if (resp.isPresent()) {
+    public ResponseEntity<TreinosResponse> encontrarPorId(@PathVariable Long id) {
+        TreinosResponse resp = service.econtrarPorId(id);
+        if (resp != null) {
             return ResponseEntity.ok(resp);
         }
         return ResponseEntity.notFound().build();
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Treinos> alterar(@RequestBody Treinos treino, @PathVariable Long id) {
-        Treinos novo = service.alterar(treino, id);
+    public ResponseEntity<TreinosResponse> alterar(@Valid @RequestBody TreinosRequest request, @PathVariable Long id) {
+        TreinosResponse novo = service.alterar(request, id);
         if (novo != null) {
             return ResponseEntity.ok(novo);
         }

@@ -1,13 +1,15 @@
 package br.com.alphacoach.app.controller;
 
+import br.com.alphacoach.app.dto.request.AlterAlunoRequest;
+import br.com.alphacoach.app.dto.request.AlunoRequest;
+import br.com.alphacoach.app.dto.response.AlunoResponse;
 import br.com.alphacoach.app.model.Aluno;
 import br.com.alphacoach.app.service.AlunoService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,8 +41,8 @@ public class AlunoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Aluno>> buscarPorId(@PathVariable Long id) {
-        Optional<Aluno> resp = service.buscarPorId(id);
+    public ResponseEntity<AlunoResponse> buscarPorId(@PathVariable Long id) {
+        AlunoResponse resp = service.buscarPorId(id);
         if (resp != null) {
             return ResponseEntity.ok(resp);
         }
@@ -48,24 +50,24 @@ public class AlunoController {
     }
 
     @PostMapping
-    public ResponseEntity<Aluno> salvar(@RequestBody Aluno aluno) {
-        Aluno novo = service.salvar(aluno);
-        URI uri = URI.create("/alunos/" + novo.getId());
-        return ResponseEntity.created(uri).body(novo);
+    public ResponseEntity<AlunoResponse> adicionar(@Valid @RequestBody AlunoRequest request) {
+        AlunoResponse alunoResponse = service.salvar(request);
+        URI uri = URI.create("/alunos/" + alunoResponse.id());
+        return ResponseEntity.created(uri).body(alunoResponse);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Aluno> alterarAluno(@RequestBody Aluno aluno, @PathVariable Long id) {
-        Aluno alterado = service.alterarAluno(aluno, id);
-        if (aluno != null) {
-            return ResponseEntity.ok(aluno);
+    public ResponseEntity<AlunoResponse> alterarAluno(@Valid @RequestBody AlterAlunoRequest request, @PathVariable Long id) {
+        AlunoResponse alterado = service.alterarAluno(request, id);
+        if (alterado != null) {
+            return ResponseEntity.ok(alterado);
         }
         return ResponseEntity.notFound().build();
     }
 
     @PatchMapping("/{id}/remover")
-    public ResponseEntity<Aluno> removerAluno(@PathVariable Long id) {
-        Aluno removido = service.remover(id);
+    public ResponseEntity<AlunoResponse> removerAluno(@PathVariable Long id) {
+        AlunoResponse removido = service.remover(id);
         if (removido != null) {
             return ResponseEntity.ok(removido);
         }
@@ -73,8 +75,8 @@ public class AlunoController {
     }
 
     @PatchMapping("/{id}/recuperarAluno")
-    public ResponseEntity<Aluno> recuperarAluno(@PathVariable Long id) {
-        Aluno recuperado = service.recuperarAluno(id);
+    public ResponseEntity<AlunoResponse> recuperarAluno(@PathVariable Long id) {
+        AlunoResponse recuperado = service.recuperarAluno(id);
         if (recuperado != null) {
             return ResponseEntity.ok(recuperado);
         }

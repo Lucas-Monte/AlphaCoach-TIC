@@ -1,8 +1,15 @@
 package br.com.alphacoach.app.model;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
+@Getter
+@Setter
 @Table(name="pagamentoAluno", uniqueConstraints = {
         @UniqueConstraint(
                 name = "un_aluno_competencia",
@@ -19,9 +26,23 @@ public class PagamentoAluno {
     private LocalDate competencia;
     @Column(name = "dataPagamento", nullable = false)
     private LocalDate dataPagamento;
+    //@Column(name = "valorPago")
+    //private Float valorPago;
     @ManyToOne
     @JoinColumn(name = "planoId", nullable = false)
     private Planos plano;
+    //@Column(name = "formaPagamento")
+    //@Enumerated(EnumType.STRING)
+    //private FormasTypes formaPagamento;
+    //@Column(name = "totalPago")
+    //private Float totalPago;
+    //@Column(name = "proximoPagamento")
+    //@JsonFormat(pattern = "dd/MM/yyyy")
+    //private List<LocalDate> proximoPagamento;
+   // @Column(name = "pagamentosEfetuados")
+    //@JsonFormat(pattern = "dd/MM/yyyy")
+    //private List<LocalDate> pagamentosEfetuados;
+    //Criar uma outra classe no estilo de treinos com exercicios treinos, mas sendo PagamentoAluno com StatusPagamento
 
 
     public PagamentoAluno(Long id, Aluno aluno, LocalDate competencia, LocalDate dataPagamento, Planos plano) {
@@ -35,43 +56,4 @@ public class PagamentoAluno {
     public PagamentoAluno() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Aluno getAluno() {
-        return aluno;
-    }
-
-    public void setAluno(Aluno aluno) {
-        this.aluno = aluno;
-    }
-
-    public LocalDate getCompetencia() {
-        return competencia;
-    }
-
-    public void setCompetencia(LocalDate competencia) {
-        this.competencia = competencia;
-    }
-
-    public LocalDate getDataPagamento() {
-        return dataPagamento;
-    }
-
-    public void setDataPagamento(LocalDate dataPagamento) {
-        this.dataPagamento = dataPagamento;
-    }
-
-    public Planos getPlano() {
-        return plano;
-    }
-
-    public void setPlano(Planos plano) {
-        this.plano = plano;
-    }
 }

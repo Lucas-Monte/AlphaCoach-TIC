@@ -1,12 +1,12 @@
 package br.com.alphacoach.app.service;
 
+import br.com.alphacoach.app.dto.request.AgendaTreinoRequest;
+import br.com.alphacoach.app.dto.response.AgendaTreinoResponse;
 import br.com.alphacoach.app.model.AgendaTreino;
 import br.com.alphacoach.app.model.Aluno;
 import br.com.alphacoach.app.repository.AgendaTreinoRepository;
 import br.com.alphacoach.app.repository.AlunoRepository;
 import jakarta.transaction.Transactional;
-import org.aspectj.apache.bcel.classfile.Module;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,47 +23,55 @@ public class AgendaTreinoService {
     }
 
     @Transactional
-    public AgendaTreino criar(AgendaTreino agenda) {
-        if (agendaRepository.existsByAlunoAndData(agenda.getAluno(), agenda.getData())) {
+    public AgendaTreinoResponse criar(AgendaTreinoRequest request) {
+        if (agendaRepository.existsByAlunoIdAndData(request.alunoId(), request.dataEHorario())) {
             throw new IllegalArgumentException("Agenda já criada para esse aluno");
         }
-        if (agenda.getAluno() != null && agenda.getAluno().getId() != null) {
-            Aluno aluno = alunoRepository.findById(agenda.getAluno().getId()).orElseThrow(() -> new RuntimeException("Aluno não cadastrado"));
-            agenda.setAluno(aluno);
-        } else {
-            throw new IllegalArgumentException("Aluno é obrigatório ser informado!");
-        }
+        AgendaTreino agenda = new AgendaTreino();
+        agenda.setData(request.dataEHorario());
+        Aluno aluno = alunoRepository.findById(request.alunoId()).orElseThrow(() -> new RuntimeException("Aluno não cadastrado"));
+        agenda.setAluno(aluno);
+        agenda.setCheckIn(false);
+        agendaRepository.save(agenda);
 
-        return agendaRepository.save(agenda);
+        return new AgendaTreinoResponse(agenda.getId(), agenda.getAluno().getId(), agenda.getData(), agenda.getCheckIn());
     }
 
     public List<AgendaTreino> listar() {
         return agendaRepository.findAll();
     }
 
-    public Optional<AgendaTreino> encontrarPorId(Long id) {
-        return agendaRepository.findById(id);
+    public AgendaTreinoResponse encontrarPorId(Long id) {
+        Optional<AgendaTreino> procurado = agendaRepository.findById(id);
+        if (procurado.isPresent()){
+            AgendaTreino encontrado = procurado.get();
+            return new AgendaTreinoResponse(encontrado.getId(), encontrado.getAluno().getId(), encontrado.getData(), encontrado.getCheckIn());
+        }
+
+        return null;
     }
 
     @Transactional
-    public AgendaTreino alterar(AgendaTreino novo, Long id) {
+    public AgendaTreinoResponse alterar(AgendaTreinoRequest request, Long id) {
         AgendaTreino agenda = agendaRepository.findById(id).orElseThrow(() -> new RuntimeException("Aula não encontrada!"));
-        if (novo.getAluno() != null) agenda.setAluno(novo.getAluno());
-        if (novo.getData() != null) agenda.setData(novo.getData());
-        if (novo.isCheckIn() != null) agenda.setCheckIn(novo.isCheckIn());
-
-        return agendaRepository.save(agenda);
+        if (request.alunoId() != null) {
+            Aluno aluno = alunoRepository.findById(request.alunoId()).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+            agenda.setAluno(aluno);
+        }
+        if (request.dataEHorario() != null) agenda.setData(request.dataEHorario());
+        agendaRepository.save(agenda);
+        return new AgendaTreinoResponse(agenda.getId(), agenda.getAluno().getId(), agenda.getData(), agenda.getCheckIn());
     }
 
-    public AgendaTreino fazerCheckIn(Long id) {
+    public AgendaTreinoResponse fazerCheckIn(Long id) {
         AgendaTreino agenda = agendaRepository.findById(id).orElseThrow(() -> new RuntimeException("Aula não encontrada!"));
-        if (agenda.isCheckIn() == true) {
+        if (agenda.getCheckIn() == true) {
             agenda.setCheckIn(false);
         } else {
             agenda.setCheckIn(true);
         }
-
-        return agendaRepository.save(agenda);
+        agendaRepository.save(agenda);
+        return new AgendaTreinoResponse(agenda.getId(), agenda.getAluno().getId(), agenda.getData(), agenda.getCheckIn());
     }
 
     @Transactional

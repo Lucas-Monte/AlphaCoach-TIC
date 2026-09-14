@@ -1,14 +1,19 @@
 package br.com.alphacoach.app.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
+@Getter
+@Setter
 @Table (name = "agendaAluno")
 public class AgendaTreino {
     @Id
@@ -19,6 +24,7 @@ public class AgendaTreino {
     @JsonIgnoreProperties("agenda")
     private Aluno aluno;
     @Column(nullable = false)
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm")
     private LocalDateTime data;
     @Column
     private Boolean checkIn;
@@ -31,45 +37,5 @@ public class AgendaTreino {
     }
 
     public AgendaTreino() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Aluno getAluno() {
-        return aluno;
-    }
-
-    public void setAluno(Aluno aluno) {
-        this.aluno = aluno;
-    }
-
-    public LocalDateTime getData() {
-        return data;
-    }
-
-    public void setData(LocalDateTime data) {
-        this.data = data;
-    }
-
-    public Boolean isCheckIn() {
-        return checkIn;
-    }
-
-    public void setCheckIn(Boolean checkIn) {
-        this.checkIn = checkIn;
-    }
-
-    public boolean fazerCheckIn() {
-        return this.checkIn = true;
-    }
-
-    public boolean removerCheckIn() {
-        return this.checkIn = false;
     }
 }

@@ -1,5 +1,8 @@
 package br.com.alphacoach.app.service;
 
+import br.com.alphacoach.app.dto.request.AlterAlunoRequest;
+import br.com.alphacoach.app.dto.request.AlunoRequest;
+import br.com.alphacoach.app.dto.response.AlunoResponse;
 import br.com.alphacoach.app.model.Aluno;
 import br.com.alphacoach.app.model.Planos;
 import br.com.alphacoach.app.repository.AlunoRepository;
@@ -22,62 +25,76 @@ public class AlunoService {
     }
 
     @Transactional
-    public Aluno salvar(Aluno aluno) {
-        if (repository.existsByCpf(aluno.getCpf())) {
+    public AlunoResponse salvar(AlunoRequest request) {
+        if (repository.existsByCpf(request.cpf())) {
             throw new IllegalArgumentException("Aluno já cadastrado!");
         }
-
-        if (aluno.getPlano() != null && aluno.getPlano().getId() != null) {
-            Planos plano = planosRepository.findById(aluno.getPlano().getId()).orElseThrow(() -> new RuntimeException("Plano não encontrado"));
-            aluno.setPlano(plano);
-        } else {
-            throw new IllegalArgumentException("Informe o plano!");
-        }
-
-        return repository.save(aluno);
+        Aluno novo = new Aluno();
+        novo.setNome(request.nome());
+        novo.setEmail(request.email());
+        novo.setCpf(request.cpf());
+        novo.setTelefone(request.telefone());
+        novo.setDataNascimento(request.dataNascimento());
+        novo.setObjetivo(request.objetivo());
+        novo.setAnamnese(request.anamnese());
+        Planos plano = planosRepository.findById(request.planoId()).orElseThrow(() -> new RuntimeException("Plano não encontrado"));
+        novo.setPlano(plano);
+        novo.setAtivo(true);
+        novo.setTipoAluno(request.tipoAluno());
+        repository.save(novo);
+        return new AlunoResponse(novo.getId(),novo.getNome(), novo.getEmail(), novo.getPlano().getId(), novo.getTipoAluno(), novo.getObjetivo(), novo.getAnamnese(), novo.getAtivo());
     }
 
     public List<Aluno> listar() {
         return repository.findAll();
     }
 
-    public Optional<Aluno> buscarPorId(Long id) {
-        return repository.findById(id);
+    public AlunoResponse buscarPorId(Long id) {
+        Optional<Aluno> procurado = repository.findById(id);
+        if (procurado.isPresent()) {
+            Aluno encontrado = procurado.get();
+            return new AlunoResponse(encontrado.getId(), encontrado.getNome(), encontrado.getEmail(), encontrado.getPlano().getId(), encontrado.getTipoAluno(), encontrado.getObjetivo(), encontrado.getAnamnese(), encontrado.getAtivo());
+        }
+        return null;
+        
     }
 
     @Transactional
-    public Aluno alterarAluno(Aluno novo, Long id) {
+    public AlunoResponse alterarAluno(AlterAlunoRequest request, Long id) {
         Aluno procurado = repository.findById(id).orElseThrow(() -> new RuntimeException("Aluno não encontrado!"));
-         if (novo.getNome() != null) procurado.setNome(novo.getNome());
-         if (novo.getEmail() != null) procurado.setEmail(novo.getEmail());
-         if (novo.getCpf() != null) procurado.setCpf(novo.getCpf());
-         if (novo.getDataNascimento() != null) procurado.setDataNascimento(novo.getDataNascimento());
-         if (novo.getEndereco() != null) procurado.setEndereco(novo.getEndereco());
-         if (novo.getTipoCliente() != null) procurado.setTipoCliente(novo.getTipoCliente());
-         if (novo.getAtivo() != null) procurado.setAtivo(novo.getAtivo());
-         if (novo.getTelefone() != null) procurado.setTelefone(novo.getTelefone());
-         if (novo.getPlano() != null) procurado.setPlano(novo.getPlano());
-         if (novo.getObjetivo() != null) procurado.setObjetivo(novo.getObjetivo());
-         if (novo.getAnamnese() != null) procurado.setAnamnese(novo.getAnamnese());
-         return repository.save(procurado);
+         if (request.nome() != null) procurado.setNome(request.nome());
+         if (request.email() != null) procurado.setEmail(request.email());
+         if (request.cpf() != null) procurado.setCpf(request.cpf());
+         if (request.dataNascimento() != null) procurado.setDataNascimento(request.dataNascimento());
+         if (request.endereco() != null) procurado.setEndereco(request.endereco());
+         if (request.tipoAluno() != null) procurado.setTipoAluno(request.tipoAluno());
+         if (request.telefone() != null) procurado.setTelefone(request.telefone());
+         if (request.planoId() != null) {
+             Planos plano = planosRepository.findById(request.planoId()).orElseThrow(() -> new RuntimeException("Planio não encontrado"));
+             procurado.setPlano(plano);
+         }
+         if (request.objetivo() != null) procurado.setObjetivo(request.objetivo());
+         if (request.anamnese() != null) procurado.setAnamnese(request.anamnese());
+         repository.save(procurado);
+         return new AlunoResponse(procurado.getId(), procurado.getNome(), procurado.getEmail(), procurado.getPlano().getId(), procurado.getTipoAluno(), procurado.getObjetivo(), procurado.getAnamnese(), procurado.getAtivo());
     }
 
     @Transactional
-    public Aluno remover(Long id) {
+    public AlunoResponse remover(Long id) {
         Aluno aluno = repository.findById(id).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
-        if (aluno.isAtivo()) {
+        if (aluno.getAtivo()) {
             aluno.setAtivo(false);
         }
-        return aluno;
+        return new AlunoResponse(aluno.getId(), aluno.getNome(), aluno.getEmail(), aluno.getPlano().getId(), aluno.getTipoAluno(), aluno.getObjetivo(), aluno.getAnamnese(), aluno.getAtivo());
     }
 
     @Transactional
-    public Aluno recuperarAluno(Long id) {
+    public AlunoResponse recuperarAluno(Long id) {
         Aluno aluno = repository.findById(id).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
-        if (!aluno.isAtivo()) {
+        if (!aluno.getAtivo()) {
             aluno.setAtivo(true);
         }
-        return aluno;
+        return new AlunoResponse(aluno.getId(), aluno.getNome(), aluno.getEmail(), aluno.getPlano().getId(), aluno.getTipoAluno(), aluno.getObjetivo(), aluno.getAnamnese(), aluno.getAtivo());
     }
 
     public List<Aluno> listarAtivos() {

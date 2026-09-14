@@ -1,5 +1,8 @@
 package br.com.alphacoach.app.service;
 
+import br.com.alphacoach.app.dto.request.ExercicioTreinoRequest;
+import br.com.alphacoach.app.dto.request.TreinosRequest;
+import br.com.alphacoach.app.dto.response.TreinosResponse;
 import br.com.alphacoach.app.model.Aluno;
 import br.com.alphacoach.app.model.ExercicioTreino;
 import br.com.alphacoach.app.model.Exercicios;
@@ -11,6 +14,7 @@ import br.com.alphacoach.app.repository.TreinosRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,50 +33,69 @@ public class TreinosService {
     }
 
     @Transactional
-    public Treinos criar(Treinos treino) {
-        if (treino.getAluno() != null && treino.getAluno().getId() != null) {
-            Aluno aluno = alunoRepository.findById(treino.getAluno().getId()).orElseThrow(() -> new RuntimeException("Aluno não cadastrado!"));
-            treino.setAluno(aluno);
-        } else {
-            throw new IllegalArgumentException("Informe o aluno...");
+    public TreinosResponse criar(TreinosRequest request) {
+        Treinos novo = new Treinos();
+        novo.setNome(request.nome());
+
+        Aluno aluno = alunoRepository.findById(request.alunoId()).orElseThrow(() -> new RuntimeException("Aluno não cadastrado!"));
+        novo.setAluno(aluno);
+        novo.setDataCriacao(LocalDate.now());
+        novo.setStatus(true);
+        //Passar um ExercicioTreinoRequest no TreinoRequest
+        for (ExercicioTreinoRequest ex : request.exercicios()) {
+            Exercicios exercicio = exerciciosRepository.findById(ex.exercicioId()).orElseThrow(() -> new RuntimeException("Exercicio não cadastrado"));
+            ExercicioTreino exercicioTreino = new ExercicioTreino();
+            exercicioTreino.setExercicio(exercicio);
+            exercicioTreino.setTreino(novo);
+            exercicioTreino.setPotencia(ex.potencia());
+            exercicioTreino.setIntensidade(ex.intensidade());
+            exercicioTreino.setSeries(ex.series());
+            exercicioTreino.setRepeticoes(ex.repeticoes());
+            exercicioTreino.setCarga(ex.carga());
+            exercicioTreino.setTempoDescanso(ex.tempoDescanso());
+            novo.adicionarExercicio(exercicioTreino);
         }
-
-        if (treino.getExercicios() != null) {
-            for (ExercicioTreino ex : treino.getExercicios()) {
-                if (ex.getExercicio() != null && ex.getExercicio().getId() != null) {
-                    Exercicios exercicio = exerciciosRepository.findById(ex.getExercicio().getId()).orElseThrow(() -> new RuntimeException("Exercicio não cadastrado"));
-
-                    ex.setExercicio(exercicio);
-                    ex.setTreino(treino);
-                } else {
-                    throw new IllegalArgumentException("Exercicio não informado");
-                }
-
-            }
-        } else {
-            throw new IllegalArgumentException("Informe ao menos um exercicio!");
-        }
-
-        return treinosRepository.save(treino);
+        treinosRepository.save(novo);
+        return new TreinosResponse(novo);
     }
 
     public List<Treinos> listar() {
         return treinosRepository.findAll();
     }
 
-    public Optional<Treinos> econtrarPorId(Long id) {
-        return treinosRepository.findById(id);
+    public TreinosResponse econtrarPorId(Long id) {
+        Optional<Treinos> procurado = treinosRepository.findById(id);
+        if (procurado.isPresent()){
+            Treinos encontrado = procurado.get();
+            return new TreinosResponse(encontrado);
+        }
+        return null;
     }
 
     @Transactional
-    public Treinos alterar(Treinos treino, Long id) {
-        Treinos procurado = treinosRepository.findById(id).orElseThrow(() -> new RuntimeException("Treino não encontrado!"));
-        if (treino.getDataCriacao() != null) procurado.setDataCriacao(treino.getDataCriacao());
-        if (treino.getNome() != null) procurado.setNome(treino.getNome());
-        if (treino.isStatus() != null) procurado.setStatus(treino.isStatus());
-        if (treino.getAluno() != null) procurado.setAluno(treino.getAluno());
-
-        return treinosRepository.save(procurado);
+    public TreinosResponse alterar(TreinosRequest request, Long id) {
+        Treinos alterado = treinosRepository.findById(id).orElseThrow(() -> new RuntimeException("Treino não encontrado!"));
+        if (request.nome() != null) alterado.setNome(request.nome());
+        if (request.alunoId() != null) {
+            Aluno aluno = alunoRepository.findById(request.alunoId()).orElseThrow(() -> new RuntimeException("Aluno não encontrado!"));
+            alterado.setAluno(aluno);
+        }
+        if (request.exercicios() != null) {
+            for (ExercicioTreinoRequest ex : request.exercicios()) {
+                Exercicios exercicio = exerciciosRepository.findById(ex.exercicioId()).orElseThrow(() -> new RuntimeException("Exercicio não cadastrado"));
+                ExercicioTreino exercicioTreino = new ExercicioTreino();
+                exercicioTreino.setExercicio(exercicio);
+                exercicioTreino.setTreino(alterado);
+                exercicioTreino.setPotencia(ex.potencia());
+                exercicioTreino.setIntensidade(ex.intensidade());
+                exercicioTreino.setSeries(ex.series());
+                exercicioTreino.setRepeticoes(ex.repeticoes());
+                exercicioTreino.setCarga(ex.carga());
+                exercicioTreino.setTempoDescanso(ex.tempoDescanso());
+            }
+        }
+        treinosRepository.save(alterado);
+        return new TreinosResponse(alterado);
     }
 
     @Transactional

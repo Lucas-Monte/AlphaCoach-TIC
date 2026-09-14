@@ -1,14 +1,18 @@
 package br.com.alphacoach.app.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "treinos")
 public class Treinos {
     @Id
@@ -20,12 +24,13 @@ public class Treinos {
     @JoinColumn(name = "alunoId", nullable = false)
     private Aluno aluno;
     @Column
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataCriacao;
     @Column
     private Boolean status;
     @OneToMany(mappedBy = "treino", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnoreProperties("treino")
-    private List<ExercicioTreino> exercicios;
+    private List<ExercicioTreino> exercicios = new ArrayList<>();
 
     public Treinos(Long id, String nome, Aluno aluno, LocalDate dataCriacao, List<ExercicioTreino> exercicios) {
         this.id = id;
@@ -39,53 +44,6 @@ public class Treinos {
     public Treinos() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public Aluno getAluno() {
-        return aluno;
-    }
-
-    public void setAluno(Aluno aluno) {
-        this.aluno = aluno;
-    }
-
-    public LocalDate getDataCriacao() {
-        return dataCriacao;
-    }
-
-    public void setDataCriacao(LocalDate dataCriacao) {
-        this.dataCriacao = dataCriacao;
-    }
-
-    public Boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(Boolean status) {
-        this.status = status;
-    }
-
-    public List<ExercicioTreino> getExercicios() {
-        return exercicios;
-    }
-
-    public void setExercicios(List<ExercicioTreino> exercicios) {
-        this.exercicios = exercicios;
-    }
 
     public void adicionarExercicio(ExercicioTreino exercicio) {
         this.exercicios.add(exercicio);
@@ -95,18 +53,18 @@ public class Treinos {
         this.exercicios.removeIf(procurado -> procurado.equals(exercicio));
     }
 
-    public int duracaoEstimada() {
-        int resultado;
-        int descansoTotal = 0;
-        int seriesTotal = 0;
-        int repeticoesTotal = 0;
-        for (ExercicioTreino exercicio : exercicios) {
-            descansoTotal += exercicio.getTempoDescanso();
-            seriesTotal += exercicio.getSeries();
-            repeticoesTotal += exercicio.getRepeticoes();
-        }
-
-        resultado = (seriesTotal * repeticoesTotal) + descansoTotal;
-        return resultado;
-    }
+//    public int duracaoEstimada() {
+//        int resultado;
+//        int descansoTotal = 0;
+//        int seriesTotal = 0;
+//        int repeticoesTotal = 0;
+//        for (ExercicioTreino exercicio : exercicios) {
+//            descansoTotal += exercicio.getTempoDescanso();
+//            seriesTotal += exercicio.getSeries();
+//            repeticoesTotal += exercicio.getRepeticoes();
+//        }
+//
+//        resultado = (seriesTotal * repeticoesTotal) + descansoTotal;
+//        return resultado;
+//    }
 }
