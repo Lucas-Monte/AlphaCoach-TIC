@@ -1,9 +1,14 @@
 package br.com.alphacoach.app.model;
 
+import br.com.alphacoach.app.exception.BusinessException;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "exercicioTreino")
 public class ExercicioTreino {
     @Id
@@ -47,87 +52,30 @@ public class ExercicioTreino {
     public ExercicioTreino() {
     }
 
-    public Long getId() {
-        return id;
-    }
+    /*public void atualizarPrescricao(Integer series, Integer repeticoes, String carga, Integer tempoDescanso) {
+        if(series <= 0) {
+            throw new BusinessException("A sério não pode ser menor ou igual a zero");
+        }
+        if (repeticoes <= 0) {
+            throw new BusinessException("As repetições não podem ser menores ou igual a zero");
+        }
+        if (carga.isBlank() || carga == null)  {
+            throw new BusinessException("A carga precisa ser preenchida");
+        }
+        if (tempoDescanso < 0) {
+            throw new BusinessException("O tempo de descanso não pode ser menor que zero");
+        }
+        this.setSeries(series);
+        this.setRepeticoes(repeticoes);
+        this.setCarga(carga);
+        this.setTempoDescanso(tempoDescanso);
+    }*/
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public Treinos getTreino() {
-        return treino;
-    }
 
-    public void setTreino(Treinos treino) {
-        this.treino = treino;
-    }
-
-    public Exercicios getExercicio() {
-        return exercicio;
-    }
-
-    public void setExercicio(Exercicios exercicio) {
-        this.exercicio = exercicio;
-    }
-
-    public Float getPotencia() {
-        return potencia;
-    }
-
-    public void setPotencia(Float potencia) {
-        this.potencia = potencia;
-    }
-
-    public Float getIntensidade() {
-        return intensidade;
-    }
-
-    public void setIntensidade(Float intensidade) {
-        this.intensidade = intensidade;
-    }
-
-    public Integer getSeries() {
-        return series;
-    }
-
-    public void setSeries(Integer series) {
-        this.series = series;
-    }
-
-    public Integer getRepeticoes() {
-        return repeticoes;
-    }
-
-    public void setRepeticoes(Integer repeticoes) {
-        this.repeticoes = repeticoes;
-    }
-
-    public String getCarga() {
-        return carga;
-    }
-
-    public void setCarga(String carga) {
-        this.carga = carga;
-    }
-
-    public Integer getTempoDescanso() {
-        return tempoDescanso;
-    }
-
-    public void setTempoDescanso(Integer tempoDescanso) {
-        this.tempoDescanso = tempoDescanso;
-    }
-
-    public Boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(Boolean status) {
-        this.status = status;
-    }
-
-    public void concluirExercicio() {
-        this.status = true;
-    }
+    //atualizarPrescricao(series, repeticoes, carga, descanso): um único ponto para alterar, com validação de valores positivos.
+    //concluir() e reabrir(): em vez de só concluirExercicio(). Bloqueie concluir duas vezes -> por enquanto não.
+    //calcularVolume(): séries × repetições. Se carga virar numérica, dá para calcular carga × volume -> por enquanto não..
+    //calcularTempoEstimado(): séries × (tempo de execução + descanso). Hoje o descanso está em Integer, então defina a unidade (segundos) e documente -> por enquanto não..
+    //status como Boolean: se futuramente houver "pulado" ou "substituído", vale virar enum -> por enquanto não.
 }

@@ -59,6 +59,23 @@ public class TreinosService {
         return new TreinosResponse(novo);
     }
 
+    @Transactional
+    public TreinosResponse removerExercicio(Long id, ExercicioTreinoRequest request) {
+        Treinos treino = treinosRepository.findById(id).orElseThrow(() -> new RuntimeException("Treino não encontrado"));
+        ExercicioTreino exercicioTreino = new ExercicioTreino();
+        Exercicios exercicio = exerciciosRepository.findById(request.exercicioId()).orElseThrow(() -> new RuntimeException("Exercicio não encontrado"));
+        exercicioTreino.setExercicio(exercicio);
+        exercicioTreino.setTreino(treino);
+        exercicioTreino.setPotencia(request.potencia());
+        exercicioTreino.setIntensidade(request.intensidade());
+        exercicioTreino.setSeries(request.series());
+        exercicioTreino.setRepeticoes(request.repeticoes());
+        exercicioTreino.setCarga(request.carga());
+        exercicioTreino.setTempoDescanso(request.tempoDescanso());
+        treino.removerExercicio(exercicioTreino);
+        return new TreinosResponse(treino);
+    }
+
     public List<Treinos> listar() {
         return treinosRepository.findAll();
     }
@@ -99,11 +116,18 @@ public class TreinosService {
     }
 
     @Transactional
-    public boolean remover(Long id) {
-        if (treinosRepository.existsById(id)) {
-            treinosRepository.deleteById(id);
-            return true;
-        }
-        return false;
+    public TreinosResponse desativar(Long id) {
+        Treinos treino = treinosRepository.findById(id).orElseThrow(() -> new RuntimeException("Treino não encontrado"));
+        treino.desativar();
+        treinosRepository.save(treino);
+        return new TreinosResponse(treino);
+    }
+
+    @Transactional
+    public TreinosResponse ativar(Long id) {
+        Treinos treino = treinosRepository.findById(id).orElseThrow(() -> new RuntimeException("Treino não encontrado"));
+        treino.ativar();
+        treinosRepository.save(treino);
+        return new TreinosResponse(treino);
     }
 }

@@ -1,8 +1,17 @@
 package br.com.alphacoach.app.model;
 
+import br.com.alphacoach.app.exception.BusinessException;
+import br.com.alphacoach.app.exception.UrlInvalidaException;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.net.URI;
+import java.net.URISyntaxException;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "exercicios")
 public class Exercicios {
 
@@ -29,47 +38,35 @@ public class Exercicios {
     public Exercicios() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public void removerExercicio(long id) {
+    public void desativar() {
+        if (!this.ativo) {
+            throw new BusinessException("Exercício já está desativado!");
+        }
         this.ativo = false;
     }
 
-    public Boolean getAtivo() {
-        return ativo;
+    public void ativar() {
+        if (this.ativo) {
+            throw new BusinessException("Exercício já está ativo!");
+        }
+        this.ativo = true;
     }
 
-    public void setAtivo(Boolean ativo) {
-        this.ativo = ativo;
+    public boolean validarLink(String url) {
+        if (url == null || url.isBlank()) {
+            return false;
+        }
+        try {
+            URI uri = new URI(url);
+            String scheme = uri.getScheme();
+            return uri.getHost() != null
+                    && ("http".equalsIgnoreCase(scheme) || ("https").equalsIgnoreCase(scheme));
+        } catch (URISyntaxException e) {
+            throw new UrlInvalidaException(e);
+        }
     }
 
-    public String getLinkVideo() {
-        return linkVideo;
-    }
 
-    public void setLinkVideo(String linkVideo) {
-        this.linkVideo = linkVideo;
-    }
+    //desativar() e ativar(): substituem o removerExercicio(long id). Um exercício já usado em treinos deve ser desativado, nunca apagado.
+    //Validação de linkVideo: formato de URL básico.
 }

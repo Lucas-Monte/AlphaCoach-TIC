@@ -1,5 +1,7 @@
 package br.com.alphacoach.app.controller;
 
+import br.com.alphacoach.app.dto.request.ExercicioRequest;
+import br.com.alphacoach.app.dto.response.ExercicioResponse;
 import br.com.alphacoach.app.model.Exercicios;
 import br.com.alphacoach.app.service.ExerciciosService;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +24,9 @@ public class ExerciciosController {
     }
 
     @PostMapping
-    public ResponseEntity<Exercicios> criar(@RequestBody Exercicios exercicio) {
-        Exercicios criado = service.criar(exercicio);
-        URI uri = URI.create("/exercicios/" + criado.getId());
+    public ResponseEntity<ExercicioResponse> criar(@RequestBody ExercicioRequest request) {
+        ExercicioResponse criado = service.criar(request);
+        URI uri = URI.create("/exercicios/" + criado.id());
         return ResponseEntity.created(uri).body(criado);
     }
 
@@ -47,10 +49,10 @@ public class ExerciciosController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Exercicios>> encontrarPorId(@PathVariable Long id) {
-        Optional<Exercicios> procurado = service.encontrarPorId(id);
+    public ResponseEntity<ExercicioResponse> encontrarPorId(@PathVariable Long id) {
+        ExercicioResponse procurado = service.encontrarPorId(id);
 
-        if (procurado.isPresent()) {
+        if (procurado != null) {
             return ResponseEntity.ok(procurado);
         }
 
@@ -58,8 +60,8 @@ public class ExerciciosController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Exercicios> alterar(@RequestBody Exercicios novo, @PathVariable Long id) {
-        Exercicios alterado = service.alterar(novo, id);
+    public ResponseEntity<ExercicioResponse> alterar(@RequestBody ExercicioRequest request, @PathVariable Long id) {
+        ExercicioResponse alterado = service.alterar(request, id);
         if (alterado != null) {
             return ResponseEntity.ok(alterado);
         }
@@ -67,8 +69,8 @@ public class ExerciciosController {
     }
 
     @PatchMapping("/{id}/remover")
-    public ResponseEntity<Exercicios> remover(@PathVariable Long id) {
-        Exercicios exercicio = service.remover(id);
+    public ResponseEntity<ExercicioResponse> remover(@PathVariable Long id) {
+        ExercicioResponse exercicio = service.remover(id);
         if (exercicio!=null) {
             return ResponseEntity.ok(exercicio);
         }
@@ -76,8 +78,8 @@ public class ExerciciosController {
     }
 
     @PatchMapping("/{id}/recuperarExercicio")
-    public ResponseEntity<Exercicios> recuperarExercicio(@PathVariable Long id) {
-        Exercicios exercicio = service.recuperarExercicio(id);
+    public ResponseEntity<ExercicioResponse> recuperarExercicio(@PathVariable Long id) {
+        ExercicioResponse exercicio = service.recuperarExercicio(id);
         if (exercicio!=null) {
             return ResponseEntity.ok(exercicio);
         }

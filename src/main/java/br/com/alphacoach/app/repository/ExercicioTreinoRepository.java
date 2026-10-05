@@ -4,4 +4,5 @@ import br.com.alphacoach.app.model.ExercicioTreino;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ExercicioTreinoRepository extends JpaRepository<ExercicioTreino, Long> {
+    boolean existsByExercicio_Id(Long exercicioId);
 }

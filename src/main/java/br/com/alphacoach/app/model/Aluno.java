@@ -1,5 +1,6 @@
 package br.com.alphacoach.app.model;
 
+import br.com.alphacoach.app.model.enums.AlunosTypes;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -36,19 +38,15 @@ public class Aluno {
     private Boolean ativo;
     @Column
     private String telefone;
-    @ManyToOne
-    @JoinColumn(name = "planoId")
-    @JsonIgnoreProperties
-    private Planos plano;
     @Column (length = 100)
     private String objetivo;
     @Column (length = 500)
     private String anamnese;
     @OneToMany(mappedBy = "aluno")
     @JsonIgnoreProperties("aluno")
-    private List<AgendaTreino> agenda;
+    private List<AgendaTreino> agenda = new ArrayList<>();
 
-    public Aluno(Long id, String nome, String email, String cpf, LocalDate dataNascimento, String endereco, AlunosTypes tipoCliente, Boolean ativo, String telefone, Planos plano, String objetivo, String anamnese) {
+    public Aluno(Long id, String nome, String email, String cpf, LocalDate dataNascimento, String endereco, AlunosTypes tipoCliente, Boolean ativo, String telefone, String objetivo, String anamnese) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -58,7 +56,6 @@ public class Aluno {
         this.tipoAluno = tipoCliente;
         this.ativo = ativo;
         this.telefone = telefone;
-        this.plano = plano;
         this.objetivo = objetivo;
         this.anamnese = anamnese;
     }
@@ -66,5 +63,17 @@ public class Aluno {
     public Aluno() {
     }
 
+    //inativar() e reativar(): mudam ativo e bloqueiam repetição. A regra de "não inativar com matrícula ativa" exige consulta, então fica no service.
+    //calcularIdade(): a partir de dataNascimento.
+    //isMenorDeIdade(): útil se houver exigência de responsável.
+    //adicionarAgendamento(AgendaTreino): só se a agenda for tratada como parte do agregado. Como você vai consultar agenda por data e por aluno, um AgendaTreinoRepository provavelmente é melhor.
 
+
+
+    //O que deixar nos services
+    //Verificar se o aluno tem matrícula ativa antes de inativar (consulta).
+    //Impedir dois agendamentos no mesmo horário para o aluno (consulta).
+    //Atribuir um treino a um aluno e checar se o plano permite.
+    //Qualquer relatório ou listagem filtrada.
+    
 }

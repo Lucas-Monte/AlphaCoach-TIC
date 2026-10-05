@@ -1,6 +1,6 @@
 package br.com.alphacoach.app.dto.request;
 
-import br.com.alphacoach.app.model.FormasTypes;
+import br.com.alphacoach.app.model.enums.FormaPagamento;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 
@@ -12,5 +12,5 @@ public record PagamentoAlunoRequest(@NotNull Long alunoId,
                                     @NotNull @JsonFormat(pattern = "MM/yyyy") LocalDate competencia,
                                     @NotNull @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataPagamento,
                                     @NotNull Float valorPago,
-                                    @NotNull FormasTypes formaPagamento) {
+                                    @NotNull FormaPagamento formaPagamento) {
 }

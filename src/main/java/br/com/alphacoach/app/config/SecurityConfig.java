@@ -1,6 +1,5 @@
 package br.com.alphacoach.app.config;
 
-import br.com.alphacoach.app.model.UserTypes;
 import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

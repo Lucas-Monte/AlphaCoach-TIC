@@ -29,7 +29,7 @@ public class PlanosService {
         plano.setAtivo(true);
         repository.save(plano);
 
-        return new PlanosResponse(plano, plano.calcularValorMensal());
+        return new PlanosResponse(plano);
     }
 
     public List<Planos> listar() {
@@ -54,15 +54,22 @@ public class PlanosService {
         if (request.valor() != null) procurado.setValor(request.valor());
         repository.save(procurado);
 
-        return new PlanosResponse(procurado, procurado.calcularValorMensal());
+        return new PlanosResponse(procurado);
     }
 
     @Transactional
-    public boolean remover(Long id) {
-        if (repository.existsById(id)) {
-            repository.deleteById(id);
-            return true;
-        }
-        return false;
+    public PlanosResponse desativar(Long id) {
+        Planos procurado = repository.findById(id).orElseThrow(() -> new RuntimeException("Plano não encontrado!"));
+        procurado.desativar();
+        repository.save(procurado);
+        return new PlanosResponse(procurado);
+    }
+
+    @Transactional
+    public PlanosResponse ativar(Long id) {
+        Planos procurado = repository.findById(id).orElseThrow(() -> new RuntimeException("Plano não encontrado"));
+        procurado.ativar();
+        repository.save(procurado);
+        return new PlanosResponse(procurado);
     }
 }

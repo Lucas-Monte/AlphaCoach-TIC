@@ -1,5 +1,6 @@
 package br.com.alphacoach.app.model;
 
+import br.com.alphacoach.app.exception.BusinessException;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -46,25 +47,34 @@ public class Treinos {
 
 
     public void adicionarExercicio(ExercicioTreino exercicio) {
+        exercicio.setTreino(this);
         this.exercicios.add(exercicio);
     }
 
     public void removerExercicio(ExercicioTreino exercicio) {
-        this.exercicios.removeIf(procurado -> procurado.equals(exercicio));
+        if (this.exercicios.remove(exercicio)) {
+            exercicio.setTreino(null);
+        }
     }
 
-//    public int duracaoEstimada() {
-//        int resultado;
-//        int descansoTotal = 0;
-//        int seriesTotal = 0;
-//        int repeticoesTotal = 0;
-//        for (ExercicioTreino exercicio : exercicios) {
-//            descansoTotal += exercicio.getTempoDescanso();
-//            seriesTotal += exercicio.getSeries();
-//            repeticoesTotal += exercicio.getRepeticoes();
-//        }
-//
-//        resultado = (seriesTotal * repeticoesTotal) + descansoTotal;
-//        return resultado;
-//    }
+    public void ativar() {
+        if (this.status) {
+            throw new BusinessException("Treino ja etá ativo");
+        }
+        this.status = true;
+    }
+
+    public void desativar() {
+        if (!this.status) {
+            throw new BusinessException("Treino ja etá desativado");
+        }
+        this.status = false;
+    }
+
+
+ //adicionarExercicio/removerExercicio: sincronizando os dois lados, como nas outras raízes.
+    //ativar(), finalizar()/arquivar(): controlam status. Um Boolean pode ser pouco se houver rascunho, ativo e encerrado.
+    //concluido(): verifica se todos os exercícios estão concluídos -> por enquanto não.
+    //reiniciar(): marca todos como não concluídos para o próximo ciclo -> por enquanto não.
+
 }

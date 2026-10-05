@@ -5,11 +5,13 @@ import br.com.alphacoach.app.dto.response.AgendaTreinoResponse;
 import br.com.alphacoach.app.model.AgendaTreino;
 import br.com.alphacoach.app.service.AgendaTreinoService;
 import jakarta.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,7 +55,7 @@ public class AgendaTreinoController {
         return ResponseEntity.notFound().build();
     }
 
-    @PatchMapping("/{id}/checkin")
+    @PatchMapping("/{id}/realiza/checkin")
     public ResponseEntity<AgendaTreinoResponse> fazerCheckin(@PathVariable Long id) {
         AgendaTreinoResponse agenda = service.fazerCheckIn(id);
         if (agenda != null) {
@@ -61,6 +63,25 @@ public class AgendaTreinoController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @PatchMapping("/{id}/cancelar/checkin")
+    public ResponseEntity<AgendaTreinoResponse> cancelarCheckIn(@PathVariable Long id) {
+        AgendaTreinoResponse agenda = service.cancelarCheckIn(id);
+        if (agenda != null) {
+            return ResponseEntity.ok(agenda);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PatchMapping("/{id}/reagendar/data")
+    public ResponseEntity<AgendaTreinoResponse> reagendarAula(@PathVariable Long id, @RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm") LocalDateTime novaData) {
+        AgendaTreinoResponse agenda = service.reagendarAula(novaData, id);
+        if (agenda != null) {
+            return ResponseEntity.ok(agenda);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
 
 
     @DeleteMapping("/{id}")

@@ -48,11 +48,15 @@ public class PlanosController {
         return ResponseEntity.ok(novo);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<PlanosResponse> remover(@PathVariable Long id) {
-        if (service.remover(id)) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+    @PatchMapping("/{id}/desativar/plano")
+    public ResponseEntity<PlanosResponse> desativar(@PathVariable Long id) {
+        PlanosResponse plano = service.desativar(id);
+        return ResponseEntity.ok(plano);
+    }
+
+    @PatchMapping("/{id}/ativar/plano")
+    public ResponseEntity<PlanosResponse> ativar(@PathVariable Long id) {
+        PlanosResponse plano = service.ativar(id);
+        return ResponseEntity.ok(plano);
     }
 }

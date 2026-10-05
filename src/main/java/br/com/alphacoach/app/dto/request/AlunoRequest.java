@@ -1,6 +1,6 @@
 package br.com.alphacoach.app.dto.request;
 
-import br.com.alphacoach.app.model.AlunosTypes;
+import br.com.alphacoach.app.model.enums.AlunosTypes;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

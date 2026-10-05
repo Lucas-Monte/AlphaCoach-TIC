@@ -54,11 +54,15 @@ public class TreinosController {
         return ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Treinos> remover(@PathVariable Long id) {
-        if (service.remover(id)) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+    @PatchMapping("/{id}/desativar/treino")
+    public ResponseEntity<TreinosResponse> desativar(@PathVariable Long id) {
+        TreinosResponse treino = service.desativar(id);
+        return ResponseEntity.ok(treino);
+    }
+
+    @PatchMapping("/{id}/ativar/treino")
+    public ResponseEntity<TreinosResponse> ativar(@PathVariable Long id) {
+        TreinosResponse treino = service.ativar(id);
+        return ResponseEntity.ok(treino);
     }
 }

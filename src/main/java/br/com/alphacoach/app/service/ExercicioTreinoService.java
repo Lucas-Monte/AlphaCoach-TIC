@@ -26,7 +26,7 @@ public class ExercicioTreinoService {
         if (exercicioTreino.getPotencia() != null) procurado.setPotencia(exercicioTreino.getPotencia());
         if (exercicioTreino.getRepeticoes() != null) procurado.setRepeticoes(exercicioTreino.getRepeticoes());
         if (exercicioTreino.getSeries() != null) procurado.setSeries(exercicioTreino.getSeries());
-        if (exercicioTreino.isStatus() != null) procurado.setStatus(exercicioTreino.isStatus());
+        if (exercicioTreino.getStatus() != null) procurado.setStatus(exercicioTreino.getStatus());
         if (exercicioTreino.getTempoDescanso() != null) procurado.setTempoDescanso(exercicioTreino.getTempoDescanso());
 
         return exercicioTreinoRepository.save(procurado);

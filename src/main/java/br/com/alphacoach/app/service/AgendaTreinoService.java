@@ -9,6 +9,7 @@ import br.com.alphacoach.app.repository.AlunoRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,19 +59,32 @@ public class AgendaTreinoService {
             Aluno aluno = alunoRepository.findById(request.alunoId()).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
             agenda.setAluno(aluno);
         }
-        if (request.dataEHorario() != null) agenda.setData(request.dataEHorario());
+        if (request.dataEHorario() != null) agenda.reagendar(request.dataEHorario());
         agendaRepository.save(agenda);
         return new AgendaTreinoResponse(agenda.getId(), agenda.getAluno().getId(), agenda.getData(), agenda.getCheckIn());
     }
 
+    @Transactional
     public AgendaTreinoResponse fazerCheckIn(Long id) {
         AgendaTreino agenda = agendaRepository.findById(id).orElseThrow(() -> new RuntimeException("Aula não encontrada!"));
-        if (agenda.getCheckIn() == true) {
-            agenda.setCheckIn(false);
-        } else {
-            agenda.setCheckIn(true);
-        }
+        agenda.realizarCheckIn();
         agendaRepository.save(agenda);
+        return new AgendaTreinoResponse(agenda.getId(), agenda.getAluno().getId(), agenda.getData(), agenda.getCheckIn());
+    }
+
+    @Transactional
+    public AgendaTreinoResponse cancelarCheckIn(Long id) {
+        AgendaTreino agenda = agendaRepository.findById(id).orElseThrow(() -> new RuntimeException("Aula não encontrada!"));
+        agenda.cancelarCheckIn();
+        agendaRepository.save(agenda);
+        return new AgendaTreinoResponse(agenda.getId(), agenda.getAluno().getId(), agenda.getData(), agenda.getCheckIn());
+    }
+
+    @Transactional
+    public AgendaTreinoResponse reagendarAula(LocalDateTime novaData, Long id) {
+        AgendaTreino agenda = agendaRepository.findById(id).orElseThrow(() -> new RuntimeException("Agenda não encontrada!"));
+
+        agenda.reagendar(novaData);
         return new AgendaTreinoResponse(agenda.getId(), agenda.getAluno().getId(), agenda.getData(), agenda.getCheckIn());
     }
 

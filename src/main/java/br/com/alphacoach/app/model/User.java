@@ -1,5 +1,6 @@
 package br.com.alphacoach.app.model;
 
+import br.com.alphacoach.app.model.enums.UserTypes;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
