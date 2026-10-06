@@ -33,11 +33,8 @@ public class Parcela {
     @Column(name = "valor_parcela", precision = 10, scale = 2)
     private BigDecimal valorParcela;
 
-    public Parcela(Long id, StatusParcela statusParcela, LocalDate competencia, Matricula matricula, Integer numeroParcela, LocalDate vencimentoParcela, BigDecimal valorParcela) {
-        this.id = id;
-        this.statusParcela = statusParcela;
+    public Parcela(LocalDate competencia, Integer numeroParcela, LocalDate vencimentoParcela, BigDecimal valorParcela) {
         this.competencia = competencia;
-        this.matricula = matricula;
         this.numeroParcela = numeroParcela;
         this.vencimentoParcela = vencimentoParcela;
         this.valorParcela = valorParcela;
@@ -46,21 +43,44 @@ public class Parcela {
     public Parcela() {
     }
 
-    public BigDecimal aplicarPagamento(BigDecimal totalPago) {
-        if (this.statusParcela.equals(StatusParcela.PAGA)) {
-            throw new BusinessException("Parcela ja paga");
+    public void pagar() {
+        if (statusParcela == StatusParcela.PAGA) {
+            throw new BusinessException("Parcela já está paga");
         }
-        if (totalPago.compareTo(this.valorParcela) == 0) {
-            return BigDecimal.ZERO;
-        } else if (totalPago.compareTo(this.valorParcela) == 1) {
-            if (this.matricula.getParcelas().stream().filter(parcela -> !parcela.getStatusParcela().equals(StatusParcela.PAGA)).count() > 0) {
-                BigDecimal resto = totalPago.subtract(this.valorParcela);
-                return resto;
-            } else {
-                //Parei aqui
-                //Criar Repository, DTOs
-            }
+
+        statusParcela = StatusParcela.PAGA;
+    }
+
+    public void estornarPagamento() {
+        if (vencimentoParcela.isBefore(LocalDate.now())) {
+            statusParcela = StatusParcela.ATRASADA;
+        } else {
+            statusParcela = StatusParcela.EM_DIA;
         }
+    }
+
+    public boolean estaVencida() {
+        return estaEmAberto() && vencimentoParcela.isBefore(LocalDate.now());
+    }
+
+    public boolean estaEmAberto() {
+        return statusParcela != StatusParcela.PAGA && statusParcela != StatusParcela.CANCELADA;
+    }
+
+    public void atualziarStatusPorVencimento() {
+        if (statusParcela == StatusParcela.EM_DIA && estaVencida()) {
+            statusParcela = StatusParcela.ATRASADA;
+        }
+    }
+
+    public void cancelar() {
+        if (statusParcela == StatusParcela.CANCELADA) {
+            throw new BusinessException("Parcela ja cancelada.");
+        }
+        if (statusParcela == StatusParcela.PAGA) {
+            throw new BusinessException("Parcela com pagamento não pode ser cancelada. Estorne os pagamentos antes.");
+        }
+        statusParcela = StatusParcela.CANCELADA;
     }
 
     //aplicarPagamento(BigDecimal totalPago): compara com valorParcela e define o status (paga, parcialmente paga ou em aberto).

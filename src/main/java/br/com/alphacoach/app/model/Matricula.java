@@ -2,6 +2,7 @@ package br.com.alphacoach.app.model;
 
 import br.com.alphacoach.app.exception.BusinessException;
 import br.com.alphacoach.app.model.enums.StatusMatricula;
+import br.com.alphacoach.app.model.enums.StatusParcela;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,8 +16,8 @@ import java.util.List;
 @Setter
 @Table(name = "matricula", uniqueConstraints = {
         @UniqueConstraint(
-                name="un_aluno_plano",
-                columnNames = {"aluno_id", "plano_id"}
+                name="un_aluno_plano_status",
+                columnNames = {"aluno_id", "plano_id", "status_maticula"}
         )
 })
 public class Matricula {
@@ -55,8 +56,14 @@ public class Matricula {
 
     public void cancelarMatricula() {
         if (this.statusMatricula.equals(StatusMatricula.CANCELADO)) {
-            throw new BusinessException("Matricular ja cancelada");
+            throw new BusinessException("Matricula ja cancelada");
         }
+        for (Parcela parcela : parcelas) {
+            if (parcela.estaEmAberto()) {
+                parcela.cancelar();
+            }
+        }
+
         this.statusMatricula = StatusMatricula.CANCELADO;
     }
 

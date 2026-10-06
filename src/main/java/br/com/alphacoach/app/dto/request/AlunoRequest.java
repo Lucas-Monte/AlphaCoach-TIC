@@ -12,7 +12,6 @@ public record AlunoRequest(@NotEmpty(message = "Nome é obrigatório") String  n
                            @NotEmpty(message = "CPF é obrigatório") String cpf,
                            @NotNull(message = "Data de nascimento é obrigatório") @JsonFormat(pattern = "dd/MM/yyyy") LocalDate dataNascimento,
                            @NotEmpty(message = "Telefone é obrigatório") String telefone,
-                           @NotNull(message = "Plano é obrigatório") Long planoId,
                            @NotEmpty(message = "Objetivo é obrigatório") String objetivo,
                            @NotEmpty(message = "Anamnese é obrigatório") String anamnese,
                            @NotNull(message = "Tipo de aluno é obrigatório")AlunosTypes tipoAluno,
