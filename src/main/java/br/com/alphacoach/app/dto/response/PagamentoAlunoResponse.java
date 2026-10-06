@@ -1,11 +1,12 @@
 package br.com.alphacoach.app.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.math.BigDecimal;
 import java.time.LocalDate;
-//Mexer quando a relação StatusPagamento e PagamentoAluno estiver pronto
+
 public record PagamentoAlunoResponse(Long id,
-                                     Long aluniId,
-                                     LocalDate competencia,
+                                     Long alunoId,
                                      LocalDate dataPagamento,
-                                     Float valorPago,
-                                     Long planoId) {
+                                     BigDecimal valorPago) {
 }

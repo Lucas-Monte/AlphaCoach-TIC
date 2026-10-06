@@ -1,11 +1,9 @@
 package br.com.alphacoach.app.service;
 
-import br.com.alphacoach.app.model.Aluno;
-import br.com.alphacoach.app.model.PagamentoAluno;
-import br.com.alphacoach.app.model.Planos;
-import br.com.alphacoach.app.repository.AlunoRepository;
-import br.com.alphacoach.app.repository.PagamentoAlunoRepository;
-import br.com.alphacoach.app.repository.PlanosRepository;
+import br.com.alphacoach.app.dto.request.PagamentoAlunoRequest;
+import br.com.alphacoach.app.dto.response.PagamentoAlunoResponse;
+import br.com.alphacoach.app.model.*;
+import br.com.alphacoach.app.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -16,41 +14,46 @@ import java.util.Optional;
 public class PagamentoAlunoService {
     private PagamentoAlunoRepository pagamentoRepository;
     private AlunoRepository alunoRepository;
-    private PlanosRepository planoRepository;
+    private ParcelaRepository parcelaRepository;
+    private PagamentoParcelaRepository pagamentoParcelaRepository;
 
-    public PagamentoAlunoService(PagamentoAlunoRepository pagamentoRepository, AlunoRepository alunoRepository, PlanosRepository planoRepository) {
+    public PagamentoAlunoService(PagamentoAlunoRepository pagamentoRepository, AlunoRepository alunoRepository, ParcelaRepository parcelaRepository, PagamentoParcelaRepository pagamentoParcelaRepository) {
         this.pagamentoRepository = pagamentoRepository;
         this.alunoRepository = alunoRepository;
-        this.planoRepository = planoRepository;
+        this.parcelaRepository = parcelaRepository;
+        this.pagamentoParcelaRepository = pagamentoParcelaRepository;
     }
 
     @Transactional
-    public PagamentoAluno criar(PagamentoAluno pagamentoAluno) {
-        Aluno aluno = alunoRepository.findById(pagamentoAluno.getAluno().getId()).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
-        Planos plano = planoRepository.findById(pagamentoAluno.getPlano().getId()).orElseThrow(() -> new RuntimeException("Plano não encontrado"));
-        pagamentoAluno.setPlano(plano);
+    public PagamentoAlunoResponse criar(PagamentoAlunoRequest request) {
+        PagamentoAluno pagamentoAluno = new PagamentoAluno();
+        pagamentoAluno.setDataPagamento(request.dataPagamento());
+        pagamentoAluno.setValorPagamento(request.valorPago());
+        pagamentoAluno.setFormaPagamento(request.formaPagamento());
+        Aluno aluno = alunoRepository.findById(request.alunoId()).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
         pagamentoAluno.setAluno(aluno);
-        return pagamentoRepository.save(pagamentoAluno);
+        Parcela parcela = parcelaRepository.findById(request.parcelaId()).orElseThrow(() -> new RuntimeException("Parcela não encontrada"));
+        pagamentoAluno.adicionarPagamentoParcela(parcela);
+        pagamentoRepository.save(pagamentoAluno);
+        return new PagamentoAlunoResponse(pagamentoAluno.getId(), pagamentoAluno.getAluno().getId(), pagamentoAluno.getDataPagamento(), pagamentoAluno.getValorPagamento());
     }
 
     @Transactional
-    public PagamentoAluno alterar(PagamentoAluno pagamentoAluno, Long id) {
+    public PagamentoAlunoResponse alterar(PagamentoAlunoRequest request, Long id) {
         PagamentoAluno procurado = pagamentoRepository.findById(id).orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
-        if (pagamentoAluno.getAluno() != null) procurado.setAluno(pagamentoAluno.getAluno());
-        if (pagamentoAluno.getCompetencia() != null) procurado.setCompetencia(pagamentoAluno.getCompetencia());
-        if (pagamentoAluno.getDataPagamento() != null) procurado.setDataPagamento(pagamentoAluno.getDataPagamento());
-        if (pagamentoAluno.getPlano() != null) procurado.setPlano(pagamentoAluno.getPlano());
-        return pagamentoRepository.save(procurado);
+        if (request.alunoId() != null) {
+            Aluno aluno = alunoRepository.findById(request.alunoId()).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+            procurado.setAluno(aluno);
+        }
+        if (request.dataPagamento() != null) procurado.setDataPagamento(request.dataPagamento());
+        if (request.formaPagamento() != null) procurado.setFormaPagamento(request.formaPagamento());
+        if (request.valorPago() != null) procurado.setValorPagamento(request.valorPago());
+        pagamentoRepository.save(procurado);
+        return new PagamentoAlunoResponse(procurado.getId(), procurado.getAluno().getId(), procurado.getDataPagamento(), procurado.getValorPagamento());
     }
 
     public List<PagamentoAluno> listar() {
-        List<PagamentoAluno> lista = pagamentoRepository.findAll();
-
-        return lista;
-    }
-
-    public Optional<PagamentoAluno> procurarPorId(Long id) {
-        return pagamentoRepository.findById(id);
+        return pagamentoRepository.findAll();
     }
 
     @Transactional
@@ -60,5 +63,10 @@ public class PagamentoAlunoService {
             return true;
         }
         return false;
+    }
+
+    @Transactional
+    public PagamentoAlunoResponse removerParcela(PagamentoAlunoRequest request, Long id) {
+        //Preciso pegar o pagamentoParcela para poder passar no metodo de removerPagamentoParcela, para ele remover da lista de pagamentosParcelas
     }
 }

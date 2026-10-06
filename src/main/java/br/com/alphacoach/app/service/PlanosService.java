@@ -40,7 +40,7 @@ public class PlanosService {
         Optional<Planos> procurado = repository.findById(id);
         if (procurado.isPresent()) {
             Planos encontrado = procurado.get();
-            return new PlanosResponse(encontrado, encontrado.calcularValorMensal());
+            return new PlanosResponse(encontrado);
         }
         return null;
     }

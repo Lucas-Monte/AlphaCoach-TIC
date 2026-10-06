@@ -75,8 +75,29 @@ public class MatriculaService {
         return matriculaRepository.findAll();
     }
 
-    //Alterar
-    //Desativar
-    //Ativar
-    //Todos com @Transactional
+    @Transactional
+    public MatriculaResponse alterar(MatriculaRequest request, Long id) {
+        Matricula procurado = matriculaRepository.findById(id).orElseThrow(() -> new RuntimeException("Matricula não encontrada"));
+        if (request.alunoId() != null) {
+            Aluno aluno = alunoRepository.findById(request.alunoId()).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+            procurado.setAluno(aluno);
+        }
+        if (request.planoId() != null) {
+            Planos plano = planosRepository.findById(request.planoId()).orElseThrow(() -> new RuntimeException("Plano não encontrado"));
+            procurado.setPlano(plano);
+        }
+        if (request.statusMatricula() != null) procurado.setStatusMatricula(request.statusMatricula());
+        if (request.dataInicio() != null) procurado.setDataInicio(request.dataInicio());
+        matriculaRepository.save(procurado);
+        return new MatriculaResponse(procurado.getId(), procurado.getPlano().getId(), procurado.getAluno().getId(), procurado.getStatusMatricula(), procurado.getDataInicio());
+    }
+
+    @Transactional
+    public MatriculaResponse desativar(Long id) {
+        Matricula procurado = matriculaRepository.findById(id).orElseThrow(() -> new RuntimeException("Matricula não encontrada"));
+        procurado.cancelarMatricula();
+        matriculaRepository.save(procurado);
+        return new MatriculaResponse(procurado.getId(), procurado.getPlano().getId(), procurado.getAluno().getId(), procurado.getStatusMatricula(), procurado.getDataInicio());
+    }
+
 }

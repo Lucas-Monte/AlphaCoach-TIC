@@ -47,23 +47,19 @@ public class PagamentoAluno {
     public PagamentoAluno() {
     }
 
-    public BigDecimal getValorAplicadoTotal() {
-        return pagamentoParcelas.stream()
-                .map(PagamentoParcela::getValorAplicado)
-                .filter(Objects::nonNull)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    public BigDecimal getValorDisponivel() {
-        if (valorPagamento == null) {
-            return BigDecimal.ZERO;
-        }
-        return valorPagamento.subtract(getValorAplicadoTotal());
-    }
-
-    public boolean estaTotalmenteAplicado() {
-        return getValorAplicadoTotal().signum() == 0;
-    }
+//    public BigDecimal getValorAplicadoTotal() {
+//        return pagamentoParcelas.stream()
+//                .map(PagamentoParcela::getValorAplicado)
+//                .filter(Objects::nonNull)
+//                .reduce(BigDecimal.ZERO, BigDecimal::add);
+//    }
+//
+//    public BigDecimal getValorDisponivel() {
+//        if (valorPagamento == null) {
+//            return BigDecimal.ZERO;
+//        }
+//        return valorPagamento.subtract(getValorAplicadoTotal());
+//    }
 
     public PagamentoParcela adicionarPagamentoParcela(Parcela parcela) {
         if (parcela == null) {
@@ -77,13 +73,14 @@ public class PagamentoAluno {
         }
 
         BigDecimal valor = parcela.getValorParcela();
-        if (valor.compareTo(getValorDisponivel()) > 0) {
+        if (valor.compareTo(valorPagamento) != 0) {
             throw new BusinessException(
-                    "O valor da parcela (" + valor + ") ultrapassa o valor disponível do pagamento ("
-                            + getValorDisponivel() + ").");
+                    "O valor da parcela (" + valor + ") é diferente do valor disponível do pagamento ("
+                            + valorPagamento + ").");
         }
 
-        parcela.pagar();
+
+        parcela.pagar(); //altera o status da parcela
 
         PagamentoParcela item = new PagamentoParcela();
         item.setParcela(parcela);

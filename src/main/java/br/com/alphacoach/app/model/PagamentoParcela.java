@@ -1,5 +1,6 @@
 package br.com.alphacoach.app.model;
 
+import br.com.alphacoach.app.model.enums.StatusParcela;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -36,4 +37,5 @@ public class PagamentoParcela {
 
     public PagamentoParcela() {
     }
+
 }
