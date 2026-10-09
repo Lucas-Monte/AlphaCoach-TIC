@@ -101,6 +101,33 @@ public class PagamentoAluno {
         item.setPagamentoAluno(null);
     }
 
+    public void estornarTodos() {
+        for (PagamentoParcela item : pagamentoParcelas) {
+            item.getParcela().estornarPagamento();
+        }
+        pagamentoParcelas.clear();
+    }
+
+    public boolean possuiParcelas() {
+        return !pagamentoParcelas.isEmpty();
+    }
+
+    public void alterarDados(Aluno novoAluno, LocalDate novaData, FormaPagamento novaForma, BigDecimal novoValor) {
+        boolean mudaAluno = novoAluno != null && !Objects.equals(novoAluno.getId(), aluno.getId());
+        boolean mudaValor = novoValor != null
+                && (valorPagamento == null || novoValor.compareTo(valorPagamento) != 0);
+
+        if ((mudaAluno || mudaValor) && possuiParcelas()) {
+            throw new BusinessException(
+                    "Pagamento com parcelas vinculadas não pode mudar de aluno ou valor. Estorne e lance novamente.");
+        }
+        if (mudaAluno) this.aluno = novoAluno;
+        if (mudaValor) this.valorPagamento = novoValor;
+        if (novaData != null) this.dataPagamento = novaData;
+        if (novaForma != null) this.formaPagamento = novaForma;
+    }
+
+
     //adicionarPagamentoParcela(Parcela, BigDecimal valor): cria o PagamentoParcela, preenche setPagamentoAluno(this) e adiciona na lista. Vale validar aqui que a soma dos valores aplicados não ultrapassa valorPagamento.
     //removerPagamentoParcela(PagamentoParcela): usado em estorno ou ajuste.
     //getValorAplicadoTotal(): soma dos valorAplicado da lista. Como a lista pertence a este agregado, a soma em memória é segura.

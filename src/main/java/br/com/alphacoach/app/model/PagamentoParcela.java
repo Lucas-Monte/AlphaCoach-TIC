@@ -19,7 +19,7 @@ public class PagamentoParcela {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @Column(name = "parcela_id")
+    @JoinColumn(name = "parcela_id")
     @JsonIgnoreProperties("pagamentoParcelas")
     private Parcela parcela;
     @ManyToOne

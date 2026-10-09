@@ -1,10 +1,12 @@
 package br.com.alphacoach.app.service;
 
 import br.com.alphacoach.app.dto.request.PagamentoAlunoRequest;
+import br.com.alphacoach.app.dto.request.ParcelaRequest;
 import br.com.alphacoach.app.dto.response.PagamentoAlunoResponse;
 import br.com.alphacoach.app.model.*;
 import br.com.alphacoach.app.repository.*;
 import jakarta.transaction.Transactional;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,13 +43,13 @@ public class PagamentoAlunoService {
     @Transactional
     public PagamentoAlunoResponse alterar(PagamentoAlunoRequest request, Long id) {
         PagamentoAluno procurado = pagamentoRepository.findById(id).orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
+        Aluno aluno = null;
         if (request.alunoId() != null) {
-            Aluno aluno = alunoRepository.findById(request.alunoId()).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+            aluno = alunoRepository.findById(request.alunoId()).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
             procurado.setAluno(aluno);
         }
-        if (request.dataPagamento() != null) procurado.setDataPagamento(request.dataPagamento());
-        if (request.formaPagamento() != null) procurado.setFormaPagamento(request.formaPagamento());
-        if (request.valorPago() != null) procurado.setValorPagamento(request.valorPago());
+        procurado.alterarDados(aluno, request.dataPagamento(), request.formaPagamento(), request.valorPago());
+
         pagamentoRepository.save(procurado);
         return new PagamentoAlunoResponse(procurado.getId(), procurado.getAluno().getId(), procurado.getDataPagamento(), procurado.getValorPagamento());
     }
@@ -56,17 +58,31 @@ public class PagamentoAlunoService {
         return pagamentoRepository.findAll();
     }
 
-    @Transactional
-    public Boolean remover(Long id) {
-        if (pagamentoRepository.existsById(id)) {
-            pagamentoRepository.deleteById(id);
-            return true;
-        }
-        return false;
+    public PagamentoAlunoResponse procurarPorId(Long id) {
+        PagamentoAluno procurado = pagamentoRepository.findById(id).orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
+        return new PagamentoAlunoResponse(procurado.getId(), procurado.getAluno().getId(), procurado.getDataPagamento(), procurado.getValorPagamento());
     }
 
     @Transactional
-    public PagamentoAlunoResponse removerParcela(PagamentoAlunoRequest request, Long id) {
-        //Preciso pegar o pagamentoParcela para poder passar no metodo de removerPagamentoParcela, para ele remover da lista de pagamentosParcelas
+    public void remover(Long id) {
+        PagamentoAluno pagamento = buscar(id);
+        pagamento.estornarTodos();
+        pagamentoRepository.delete(pagamento);
+    }
+
+    @Transactional
+    public PagamentoAlunoResponse removerParcela(Long idPagamento, Long idPagamentoParcela) {
+        PagamentoAluno pagamentoAluno = pagamentoRepository.findById(idPagamento).orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
+        PagamentoParcela procurado = pagamentoAluno.getPagamentoParcelas().stream().filter(pagamentoParcela -> pagamentoParcela.getId().equals(idPagamentoParcela)).findFirst().orElseThrow(() -> new RuntimeException("Parcela não encontrada"));
+        pagamentoAluno.removerPagamentoParcela(procurado);
+        if (!pagamentoAluno.possuiParcelas()) {
+            pagamentoRepository.delete(pagamentoAluno);
+        }
+        return new PagamentoAlunoResponse(pagamentoAluno.getId(), pagamentoAluno.getAluno().getId(), pagamentoAluno.getDataPagamento(), pagamentoAluno.getValorPagamento());
+    }
+
+    private PagamentoAluno buscar(Long id) {
+        return pagamentoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
     }
 }

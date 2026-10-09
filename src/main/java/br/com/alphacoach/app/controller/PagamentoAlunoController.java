@@ -1,5 +1,7 @@
 package br.com.alphacoach.app.controller;
 
+import br.com.alphacoach.app.dto.request.PagamentoAlunoRequest;
+import br.com.alphacoach.app.dto.response.PagamentoAlunoResponse;
 import br.com.alphacoach.app.model.PagamentoAluno;
 import br.com.alphacoach.app.service.PagamentoAlunoService;
 import org.springframework.http.ResponseEntity;
@@ -26,33 +28,37 @@ public class PagamentoAlunoController {
     }
 
     @PostMapping()
-    public ResponseEntity<PagamentoAluno> criar(@RequestBody PagamentoAluno pagamentoAluno) {
-        PagamentoAluno novo = service.criar(pagamentoAluno);
-        URI uri = URI.create("/pagamento/" + novo.getId());
+    public ResponseEntity<PagamentoAlunoResponse> criar(@RequestBody PagamentoAlunoRequest request) {
+        PagamentoAlunoResponse novo = service.criar(request);
+        URI uri = URI.create("/pagamento/" + novo.id());
         return ResponseEntity.created(uri).body(novo);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PagamentoAluno> procurarPorId(@PathVariable Long id) {
-        Optional<PagamentoAluno> procurado = service.procurarPorId(id);
-        if (procurado.isPresent()) {
-            return ResponseEntity.ok(procurado.get());
+    public ResponseEntity<PagamentoAlunoResponse> procurarPorId(@PathVariable Long id) {
+        PagamentoAlunoResponse procurado = service.procurarPorId(id);
+        if (procurado != null) {
+            return ResponseEntity.ok(procurado);
         }
         return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> remover(@PathVariable Long id) {
-        if(service.remover(id)) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> remover(@PathVariable Long id) {
+        service.remover(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<PagamentoAluno> alterar(@RequestBody PagamentoAluno pagamentoAluno,@PathVariable Long id) {
-        PagamentoAluno procurado = service.alterar(pagamentoAluno, id);
+    public ResponseEntity<PagamentoAlunoResponse> alterar(@RequestBody PagamentoAlunoRequest request,@PathVariable Long id) {
+        PagamentoAlunoResponse procurado = service.alterar(request, id);
         return ResponseEntity.ok(procurado);
 
+    }
+
+    @DeleteMapping("/{id}/remover/{idItem}")
+    public ResponseEntity<PagamentoAlunoResponse> removerParcela(@PathVariable Long id, Long idItem){
+        PagamentoAlunoResponse pagamento = service.removerParcela(id, idItem);
+        return ResponseEntity.ok(pagamento);
     }
 }

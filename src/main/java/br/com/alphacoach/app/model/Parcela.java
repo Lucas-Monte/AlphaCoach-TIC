@@ -48,15 +48,33 @@ public class Parcela {
             throw new BusinessException("Parcela já está paga");
         }
 
+        if (!estaEmAberto()) {
+            throw new BusinessException("Parcela cancelada não pode ser paga");
+        }
+
         statusParcela = StatusParcela.PAGA;
     }
 
     public void estornarPagamento() {
-        if (vencimentoParcela.isBefore(LocalDate.now())) {
-            statusParcela = StatusParcela.ATRASADA;
-        } else {
-            statusParcela = StatusParcela.EM_DIA;
+        if (statusParcela != StatusParcela.PAGA) {
+            throw new BusinessException("Apenas parcelas pagas podem ser estornadas");
         }
+        statusParcela = vencimentoParcela.isBefore(LocalDate.now())
+                ? StatusParcela.ATRASADA
+                : StatusParcela.EM_DIA;
+    }
+
+    public void alterarVencimento(LocalDate novoVencimento) {
+        if (novoVencimento == null) {
+            throw new BusinessException("O novo vencimento é obrigatório");
+        }
+        if (!estaEmAberto()) {
+            throw new BusinessException("Só é possível alterar o vencimento de parcela em aberto");
+        }
+        this.vencimentoParcela = novoVencimento;
+        this.statusParcela = novoVencimento.isBefore(LocalDate.now())
+                ? StatusParcela.ATRASADA
+                : StatusParcela.EM_DIA;
     }
 
     public boolean estaVencida() {

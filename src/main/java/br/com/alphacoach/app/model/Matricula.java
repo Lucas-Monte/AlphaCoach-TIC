@@ -14,12 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name = "matricula", uniqueConstraints = {
-        @UniqueConstraint(
-                name="un_aluno_plano_status",
-                columnNames = {"aluno_id", "plano_id", "status_maticula"}
-        )
-})
+@Table(name = "matricula")
 public class Matricula {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

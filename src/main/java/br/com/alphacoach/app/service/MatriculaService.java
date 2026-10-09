@@ -71,25 +71,43 @@ public class MatriculaService {
         return matriculaRepository.findByStatusMatricula(StatusMatricula.ATIVO);
     }
 
+    public MatriculaResponse procurarPorId(Long id) {
+        Matricula matricula = matriculaRepository.findById(id).orElseThrow(() -> new RuntimeException("Matricula não encontrada"));
+        return new MatriculaResponse(matricula.getId(), matricula.getPlano().getId(), matricula.getAluno().getId(), matricula.getStatusMatricula(), matricula.getDataInicio());
+    }
+
     public List<Matricula> listarTodos() {
         return matriculaRepository.findAll();
     }
 
     @Transactional
     public MatriculaResponse alterar(MatriculaRequest request, Long id) {
-        Matricula procurado = matriculaRepository.findById(id).orElseThrow(() -> new RuntimeException("Matricula não encontrada"));
-        if (request.alunoId() != null) {
-            Aluno aluno = alunoRepository.findById(request.alunoId()).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
-            procurado.setAluno(aluno);
+        Matricula matricula = matriculaRepository.findById(id).orElseThrow(() -> new RuntimeException("Matricula não encontrada"));
+
+        if (request.planoId() != null && !request.planoId().equals(matricula.getPlano().getId())) {
+            throw new BusinessException("Não é possível trocar o plano. Cancele esta matrícula e crie uma nova.");
         }
-        if (request.planoId() != null) {
-            Planos plano = planosRepository.findById(request.planoId()).orElseThrow(() -> new RuntimeException("Plano não encontrado"));
-            procurado.setPlano(plano);
+        if (request.dataInicio() != null && !request.dataInicio().equals(matricula.getDataInicio())) {
+            throw new BusinessException("Não é possível alterar a data de início. Cancele esta matrícula e crie uma nova.");
         }
-        if (request.statusMatricula() != null) procurado.setStatusMatricula(request.statusMatricula());
-        if (request.dataInicio() != null) procurado.setDataInicio(request.dataInicio());
-        matriculaRepository.save(procurado);
-        return new MatriculaResponse(procurado.getId(), procurado.getPlano().getId(), procurado.getAluno().getId(), procurado.getStatusMatricula(), procurado.getDataInicio());
+
+        if (request.alunoId() != null && !request.alunoId().equals(matricula.getAluno().getId())) {
+            boolean temParcelaPaga = matricula.getParcelas().stream()
+                    .anyMatch(p -> p.getStatusParcela() == StatusParcela.PAGA);
+            if (temParcelaPaga) {
+                throw new BusinessException("Matrícula com parcelas pagas não pode trocar de aluno");
+            }
+            Aluno aluno = alunoRepository.findById(request.alunoId())
+                    .orElseThrow(() -> new BusinessException("Aluno não encontrado"));
+            if (!aluno.getAtivo()) throw new BusinessException("Aluno não está ativo");
+            if (matriculaRepository.existsByAlunoIdAndPlanoIdAndStatusMatricula(aluno.getId(), matricula.getPlano().getId(), StatusMatricula.ATIVO)) {
+                throw new BusinessException("Aluno já possui matrícula ativa neste plano");
+            }
+            matricula.setAluno(aluno);
+        }
+        
+        matriculaRepository.save(matricula);
+        return new MatriculaResponse(matricula.getId(), matricula.getPlano().getId(), matricula.getAluno().getId(), matricula.getStatusMatricula(), matricula.getDataInicio());
     }
 
     @Transactional
