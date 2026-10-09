@@ -46,7 +46,6 @@ public class PagamentoAlunoService {
         Aluno aluno = null;
         if (request.alunoId() != null) {
             aluno = alunoRepository.findById(request.alunoId()).orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
-            procurado.setAluno(aluno);
         }
         procurado.alterarDados(aluno, request.dataPagamento(), request.formaPagamento(), request.valorPago());
 
