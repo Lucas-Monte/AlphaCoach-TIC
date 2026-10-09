@@ -57,7 +57,7 @@ public class PagamentoAlunoController {
     }
 
     @DeleteMapping("/{id}/remover/{idItem}")
-    public ResponseEntity<PagamentoAlunoResponse> removerParcela(@PathVariable Long id, Long idItem){
+    public ResponseEntity<PagamentoAlunoResponse> removerParcela(@PathVariable Long id, @PathVariable Long idItem){
         PagamentoAlunoResponse pagamento = service.removerParcela(id, idItem);
         return ResponseEntity.ok(pagamento);
     }

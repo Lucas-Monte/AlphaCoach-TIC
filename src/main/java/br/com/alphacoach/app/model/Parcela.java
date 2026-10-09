@@ -2,6 +2,7 @@ package br.com.alphacoach.app.model;
 
 import br.com.alphacoach.app.exception.BusinessException;
 import br.com.alphacoach.app.model.enums.StatusParcela;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +26,7 @@ public class Parcela {
     private LocalDate competencia;
     @ManyToOne
     @JoinColumn(name = "matricula_id")
+    @JsonIgnoreProperties("parcelas")
     private Matricula matricula;
     @Column(name = "numero_parcela")
     private Integer numeroParcela;

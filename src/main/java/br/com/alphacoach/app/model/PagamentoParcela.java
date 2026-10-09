@@ -1,6 +1,7 @@
 package br.com.alphacoach.app.model;
 
 import br.com.alphacoach.app.model.enums.StatusParcela;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class PagamentoParcela {
     private Parcela parcela;
     @ManyToOne
     @JoinColumn(name = "pagamento_id")
+    @JsonIgnore
     private PagamentoAluno pagamentoAluno;
     @Column(name = "valor_aplicado", precision = 10, scale = 2)
     private BigDecimal valorAplicado;
