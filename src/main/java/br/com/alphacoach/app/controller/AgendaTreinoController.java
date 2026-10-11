@@ -74,8 +74,8 @@ public class AgendaTreinoController {
     }
 
     @PatchMapping("/{id}/reagendar/data")
-    public ResponseEntity<AgendaTreinoResponse> reagendarAula(@PathVariable Long id, @RequestParam @DateTimeFormat(pattern = "dd/MM/yyyy HH:mm") LocalDateTime novaData) {
-        AgendaTreinoResponse agenda = service.reagendarAula(novaData, id);
+    public ResponseEntity<AgendaTreinoResponse> reagendarAula(@PathVariable Long id, @RequestBody AgendaTreinoRequest request) {
+        AgendaTreinoResponse agenda = service.reagendarAula(request, id);
         if (agenda != null) {
             return ResponseEntity.ok(agenda);
         }

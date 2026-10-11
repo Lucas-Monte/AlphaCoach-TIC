@@ -81,10 +81,10 @@ public class AgendaTreinoService {
     }
 
     @Transactional
-    public AgendaTreinoResponse reagendarAula(LocalDateTime novaData, Long id) {
+    public AgendaTreinoResponse reagendarAula(AgendaTreinoRequest request, Long id) {
         AgendaTreino agenda = agendaRepository.findById(id).orElseThrow(() -> new RuntimeException("Agenda não encontrada!"));
-
-        agenda.reagendar(novaData);
+        agenda.setData(request.dataEHorario());
+        agenda.reagendar(agenda.getData());
         return new AgendaTreinoResponse(agenda.getId(), agenda.getAluno().getId(), agenda.getData(), agenda.getCheckIn());
     }
 

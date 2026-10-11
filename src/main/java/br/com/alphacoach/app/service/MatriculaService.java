@@ -50,6 +50,10 @@ public class MatriculaService {
             throw new BusinessException("Plano não está ativo");
         }
 
+        if(matriculaRepository.existsByAlunoIdAndPlanoIdAndStatusMatricula(matricula.getAluno().getId(), matricula.getPlano().getId(), StatusMatricula.ATIVO)) {
+            throw new BusinessException("O aluno " + matricula.getAluno().getNome() + " já possui o plano " + matricula.getPlano().getDescricao() + " ativo");
+        }
+
         List<BigDecimal> valoresParcelas = plano.gerarParcelas(plano.getValor(), plano.getDuracaoMeses());
         for (int i = 0; i < valoresParcelas.size(); i++) {
             Parcela nova = new Parcela();
@@ -62,6 +66,7 @@ public class MatriculaService {
             nova.setValorParcela(valoresParcelas.get(i));
             matricula.adicionarParcela(nova);
         }
+
 
         matriculaRepository.save(matricula);
         return new MatriculaResponse(matricula.getId(), matricula.getPlano().getId(), matricula.getAluno().getId(), matricula.getStatusMatricula(), matricula.getDataInicio());
