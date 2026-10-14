@@ -8,5 +8,6 @@ public record ExercicioTreinoRequest(@NotNull(message = "Exercicio Id é obrigat
                                      @NotNull(message = "Séries é obrigatório") Integer series,
                                      @NotNull(message = "Repetições é obrigatório") Integer repeticoes,
                                      @NotNull(message = "Carga Id é obrigatório") String carga,
-                                     Integer tempoDescanso) {
+                                     Integer tempoDescanso,
+                                     String observacao) {
 }

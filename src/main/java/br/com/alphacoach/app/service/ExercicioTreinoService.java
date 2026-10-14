@@ -28,6 +28,7 @@ public class ExercicioTreinoService {
         if (exercicioTreino.getSeries() != null) procurado.setSeries(exercicioTreino.getSeries());
         if (exercicioTreino.getStatus() != null) procurado.setStatus(exercicioTreino.getStatus());
         if (exercicioTreino.getTempoDescanso() != null) procurado.setTempoDescanso(exercicioTreino.getTempoDescanso());
+        if (exercicioTreino.getObservacao() != null) procurado.setObservacao(exercicioTreino.getObservacao());
 
         return exercicioTreinoRepository.save(procurado);
     }

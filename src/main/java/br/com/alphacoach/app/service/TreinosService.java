@@ -53,6 +53,7 @@ public class TreinosService {
             exercicioTreino.setRepeticoes(ex.repeticoes());
             exercicioTreino.setCarga(ex.carga());
             exercicioTreino.setTempoDescanso(ex.tempoDescanso());
+            exercicioTreino.setObservacao(ex.observacao());
             novo.adicionarExercicio(exercicioTreino);
         }
         treinosRepository.save(novo);
@@ -72,6 +73,7 @@ public class TreinosService {
         exercicioTreino.setRepeticoes(request.repeticoes());
         exercicioTreino.setCarga(request.carga());
         exercicioTreino.setTempoDescanso(request.tempoDescanso());
+        exercicioTreino.setObservacao(request.observacao());
         treino.removerExercicio(exercicioTreino);
         return new TreinosResponse(treino);
     }
@@ -109,6 +111,8 @@ public class TreinosService {
                 exercicioTreino.setRepeticoes(ex.repeticoes());
                 exercicioTreino.setCarga(ex.carga());
                 exercicioTreino.setTempoDescanso(ex.tempoDescanso());
+                exercicioTreino.setObservacao(ex.observacao());
+                alterado.adicionarExercicio(exercicioTreino);
             }
         }
         treinosRepository.save(alterado);

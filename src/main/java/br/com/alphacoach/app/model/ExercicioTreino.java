@@ -35,8 +35,10 @@ public class ExercicioTreino {
     private Integer tempoDescanso;
     @Column
     private Boolean status;
+    @Column
+    private String observacao;
 
-    public ExercicioTreino(Long id, Treinos treino, Exercicios exercicio, Float potencia, Float intensidade, Integer series, Integer repeticoes, String carga, Integer tempoDescanso) {
+    public ExercicioTreino(Long id, Treinos treino, Exercicios exercicio, Float potencia, Float intensidade, Integer series, Integer repeticoes, String carga, Integer tempoDescanso, Boolean status, String observacao) {
         this.id = id;
         this.treino = treino;
         this.exercicio = exercicio;
@@ -46,7 +48,8 @@ public class ExercicioTreino {
         this.repeticoes = repeticoes;
         this.carga = carga;
         this.tempoDescanso = tempoDescanso;
-        this.status = false;
+        this.status = status;
+        this.observacao = observacao;
     }
 
     public ExercicioTreino() {
