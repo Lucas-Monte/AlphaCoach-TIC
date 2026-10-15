@@ -84,6 +84,7 @@ public class PlanilhaTreinoDownloadController {
             //Criando font dos titles
             Font fontTitleTableOne = wb.createFont();
             fontTitleTableOne.setBold(true);
+            fontTitleTableOne.setFontName("Arial");
             fontTitleTableOne.setColor(IndexedColors.BLACK.getIndex());
             titlesTableOne.setFont(fontTitleTableOne);
             //mesclando celulas de valores
@@ -107,6 +108,11 @@ public class PlanilhaTreinoDownloadController {
             valuesTableOne.setTopBorderColor(IndexedColors.GREY_80_PERCENT.getIndex());
             valuesTableOne.setRightBorderColor(IndexedColors.GREY_80_PERCENT.getIndex());
             valuesTableOne.setLeftBorderColor(IndexedColors.GREY_80_PERCENT.getIndex());
+            //Criando font dos titles
+            Font fontValues = wb.createFont();
+            fontValues.setFontName("Arial");
+            fontValues.setColor(IndexedColors.BLACK.getIndex());
+            valuesTableOne.setFont(fontValues);
             //Definindo tamanho da largura da coluna B
             int pixelsB = 170;
             sheet.setColumnWidth(1,pixelsB * 32);
@@ -165,7 +171,110 @@ public class PlanilhaTreinoDownloadController {
 
             //verificar o porque de não estar mesclando as celulas do header até a coluna "k"
 
-            //sheet.autoSizeColumn(0);
+            //Criar tabela principal com exercicios
+            //Criando estilos
+            //titulos --> mesmo padrão do header
+            CellStyle titlesTableTwo = wb.createCellStyle();
+            titlesTableTwo.setAlignment(HorizontalAlignment.CENTER);
+            titlesTableTwo.setVerticalAlignment(VerticalAlignment.CENTER);
+            titlesTableTwo.setFillForegroundColor(azulEscuro);
+            titlesTableTwo.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            titlesTableTwo.setBorderBottom(BorderStyle.THIN);
+            titlesTableTwo.setBorderTop(BorderStyle.THIN);
+            titlesTableTwo.setBorderRight(BorderStyle.THIN);
+            titlesTableTwo.setBorderLeft(BorderStyle.THIN);
+            titlesTableTwo.setBottomBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            titlesTableTwo.setTopBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            titlesTableTwo.setRightBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            titlesTableTwo.setLeftBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            //estilizando a font
+            Font fontTitleTableTwo = wb.createFont();
+            fontTitleTableTwo.setFontName("Arial");
+            fontTitleTableTwo.setColor(IndexedColors.WHITE.getIndex());
+            fontTitleTableTwo.setBold(true);
+            //setando a font no estilo
+            titlesTableTwo.setFont(fontTitleTableTwo);
+
+            //valores - linha par - fundo branco
+            CellStyle valuesTableTwoEven = wb.createCellStyle();
+            valuesTableTwoEven.setAlignment(HorizontalAlignment.CENTER);
+            valuesTableTwoEven.setVerticalAlignment(VerticalAlignment.CENTER);
+            valuesTableTwoEven.setBorderBottom(BorderStyle.THIN);
+            valuesTableTwoEven.setBorderTop(BorderStyle.THIN);
+            valuesTableTwoEven.setBorderRight(BorderStyle.THIN);
+            valuesTableTwoEven.setBorderLeft(BorderStyle.THIN);
+            valuesTableTwoEven.setBottomBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            valuesTableTwoEven.setTopBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            valuesTableTwoEven.setRightBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            valuesTableTwoEven.setLeftBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            valuesTableTwoEven.setFont(fontValues);
+            //valores - linha impar - fundo azul acinzentado
+            CellStyle valuesTableTwoOdd = wb.createCellStyle();
+            valuesTableTwoOdd.setAlignment(HorizontalAlignment.CENTER);
+            valuesTableTwoOdd.setVerticalAlignment(VerticalAlignment.CENTER);
+            valuesTableTwoOdd.setFillForegroundColor(azulGelo);
+            valuesTableTwoOdd.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+            valuesTableTwoOdd.setBorderBottom(BorderStyle.THIN);
+            valuesTableTwoOdd.setBorderTop(BorderStyle.THIN);
+            valuesTableTwoOdd.setBorderRight(BorderStyle.THIN);
+            valuesTableTwoOdd.setBorderLeft(BorderStyle.THIN);
+            valuesTableTwoOdd.setBottomBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            valuesTableTwoOdd.setTopBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            valuesTableTwoOdd.setRightBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            valuesTableTwoOdd.setLeftBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            valuesTableTwoOdd.setFont(fontValues);
+
+            //Criando linha dos titulos da tabela 2
+            Row titlesTableTwoRow = sheet.createRow(8);
+            //Ela vai conter os titulos:
+            //Exercicio - nome do exercicio
+            Cell tExercicio = titlesTableTwoRow.createCell(0);
+            tExercicio.setCellStyle(titlesTableTwo);
+            tExercicio.setCellValue("Exercício");
+            //Series
+            Cell tSeries = titlesTableTwoRow.createCell(1);
+            tSeries.setCellStyle(titlesTableTwo);
+            tSeries.setCellValue("Séries");
+            //Repetições
+            Cell tRepeticoes = titlesTableTwoRow.createCell(2);
+            tRepeticoes.setCellStyle(titlesTableTwo);
+            tRepeticoes.setCellValue("Repetições");
+            //Carga
+            Cell tCarga = titlesTableTwoRow.createCell(3);
+            tCarga.setCellStyle(titlesTableTwo);
+            tCarga.setCellValue("Carga");
+            //Descanso (em segundos)
+            Cell tDescanso = titlesTableTwoRow.createCell(4);
+            tDescanso.setCellStyle(titlesTableTwo);
+            tDescanso.setCellValue("Descanso (em segundos)");
+            //Potencia
+            Cell tPotencia = titlesTableTwoRow.createCell(5);
+            tPotencia.setCellStyle(titlesTableTwo);
+            tPotencia.setCellValue("Potência");
+            //Intensidade
+            Cell tIntensidade = titlesTableTwoRow.createCell(6);
+            tIntensidade.setCellStyle(titlesTableTwo);
+            tIntensidade.setCellValue("Intensidade");
+            //Concluido (com opção de alteração)
+            Cell tConcluido = titlesTableTwoRow.createCell(7);
+            tConcluido.setCellStyle(titlesTableTwo);
+            tConcluido.setCellValue("Concluído");
+            //link do video
+            Cell tLink = titlesTableTwoRow.createCell(8);
+            tLink.setCellStyle(titlesTableTwo);
+            tLink.setCellValue("Link do vídeo");
+            //observações
+            Cell tObservacoes = titlesTableTwoRow.createCell(9);
+            tObservacoes.setCellStyle(titlesTableTwo);
+            tObservacoes.setCellValue("Observações");
+
+            //resultados -> criar linhas com base na lista -> uma linha por exercicioTreino do treino
+
+            int columnNumber = 10;
+            for (int i = 0; i < columnNumber; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
 
             wb.write(buffer);
 
