@@ -48,13 +48,13 @@ public class PlanosController {
         return ResponseEntity.ok(novo);
     }
 
-    @PatchMapping("/{id}/desativar/plano")
+    @PatchMapping("/{id}/desativar")
     public ResponseEntity<PlanosResponse> desativar(@PathVariable Long id) {
         PlanosResponse plano = service.desativar(id);
         return ResponseEntity.ok(plano);
     }
 
-    @PatchMapping("/{id}/ativar/plano")
+    @PatchMapping("/{id}/ativar")
     public ResponseEntity<PlanosResponse> ativar(@PathVariable Long id) {
         PlanosResponse plano = service.ativar(id);
         return ResponseEntity.ok(plano);

@@ -54,13 +54,13 @@ public class TreinosController {
         return ResponseEntity.notFound().build();
     }
 
-    @PatchMapping("/{id}/desativar/treino")
+    @PatchMapping("/{id}/desativar")
     public ResponseEntity<TreinosResponse> desativar(@PathVariable Long id) {
         TreinosResponse treino = service.desativar(id);
         return ResponseEntity.ok(treino);
     }
 
-    @PatchMapping("/{id}/ativar/treino")
+    @PatchMapping("/{id}/ativar")
     public ResponseEntity<TreinosResponse> ativar(@PathVariable Long id) {
         TreinosResponse treino = service.ativar(id);
         return ResponseEntity.ok(treino);

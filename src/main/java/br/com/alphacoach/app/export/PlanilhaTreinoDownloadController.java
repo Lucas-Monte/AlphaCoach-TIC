@@ -5,6 +5,7 @@ import br.com.alphacoach.app.service.ExercicioTreinoService;
 import br.com.alphacoach.app.service.TreinosService;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -207,6 +208,7 @@ public class PlanilhaTreinoDownloadController {
             valuesTableTwoEven.setTopBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
             valuesTableTwoEven.setRightBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
             valuesTableTwoEven.setLeftBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            valuesTableTwoEven.setWrapText(true);
             valuesTableTwoEven.setFont(fontValues);
             //valores - linha impar - fundo azul acinzentado
             CellStyle valuesTableTwoOdd = wb.createCellStyle();
@@ -222,6 +224,7 @@ public class PlanilhaTreinoDownloadController {
             valuesTableTwoOdd.setTopBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
             valuesTableTwoOdd.setRightBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
             valuesTableTwoOdd.setLeftBorderColor(IndexedColors.GREY_25_PERCENT.getIndex());
+            valuesTableTwoOdd.setWrapText(true);
             valuesTableTwoOdd.setFont(fontValues);
 
             //Criando linha dos titulos da tabela 2
@@ -269,10 +272,144 @@ public class PlanilhaTreinoDownloadController {
             tObservacoes.setCellValue("Observações");
 
             //resultados -> criar linhas com base na lista -> uma linha por exercicioTreino do treino
+            //10 celulas na linha
+            //quantidade de linhas é o tamanho da lista
+            //criar um for de 9 até o tamanho da lista + 9 e criar a linha e as celulas dela
+            int exercicios = 0;
+            int linhaInicial = 9;
+            for(int i = 0; i < response.treino().getExercicios().size(); i++) {
+                int index = linhaInicial+i;
+                Row newRow = sheet.createRow(index);
+                //nome do exercicio
+                Cell exercicio = newRow.createCell(0);
+                exercicio.setCellValue(response.treino().getExercicios().get(exercicios).getExercicio().getNome());
+                if (index % 2 == 0) {
+                    exercicio.setCellStyle(valuesTableTwoEven);
+                } else {
+                    exercicio.setCellStyle(valuesTableTwoOdd);
+                }
 
-            int columnNumber = 10;
-            for (int i = 0; i < columnNumber; i++) {
-                sheet.autoSizeColumn(i);
+
+                //series
+                Cell series = newRow.createCell(1);
+                series.setCellValue(response.treino().getExercicios().get(exercicios).getSeries());
+                if (index % 2 == 0) {
+                    series.setCellStyle(valuesTableTwoEven);
+                } else {
+                    series.setCellStyle(valuesTableTwoOdd);
+                }
+
+                //Repeticoes
+                Cell repeticoes = newRow.createCell(2);
+                repeticoes.setCellValue(response.treino().getExercicios().get(exercicios).getRepeticoes());
+                if (index % 2 == 0) {
+                    repeticoes.setCellStyle(valuesTableTwoEven);
+                } else {
+                    repeticoes.setCellStyle(valuesTableTwoOdd);
+                }
+
+                //Carga
+                Cell carga = newRow.createCell(3);
+                carga.setCellValue(response.treino().getExercicios().get(exercicios).getCarga());
+                if (index % 2 == 0) {
+                    carga.setCellStyle(valuesTableTwoEven);
+                } else {
+                    carga.setCellStyle(valuesTableTwoOdd);
+                }
+
+                //Descanso (em segundos)
+                Cell descanso = newRow.createCell(4);
+                if (response.treino().getExercicios().get(exercicios).getTempoDescanso() != null) {
+                    descanso.setCellValue(response.treino().getExercicios().get(exercicios).getTempoDescanso());
+                } else {
+                    descanso.setCellValue("");
+                }
+
+                if (index % 2 == 0) {
+                    descanso.setCellStyle(valuesTableTwoEven);
+                } else {
+                    descanso.setCellStyle(valuesTableTwoOdd);
+                }
+
+                //Potencia
+                Cell potencia = newRow.createCell(5);
+                if (response.treino().getExercicios().get(exercicios).getPotencia() != null) {
+                    potencia.setCellValue(response.treino().getExercicios().get(exercicios).getPotencia());
+                } else {
+                    potencia.setCellValue("");
+                }
+
+                if (index % 2 == 0) {
+                    potencia.setCellStyle(valuesTableTwoEven);
+                } else {
+                    potencia.setCellStyle(valuesTableTwoOdd);
+                }
+
+                //Intensidade
+                Cell intensidade = newRow.createCell(6);
+                if (response.treino().getExercicios().get(exercicios).getIntensidade() != null) {
+                    intensidade.setCellValue(response.treino().getExercicios().get(exercicios).getIntensidade());
+                } else {
+                    intensidade.setCellValue("");
+                }
+
+                if (index % 2 == 0) {
+                    intensidade.setCellStyle(valuesTableTwoEven);
+                } else {
+                    intensidade.setCellStyle(valuesTableTwoOdd);
+                }
+
+                //Concluido
+                Cell concluido = newRow.createCell(7);
+                concluido.setCellValue("Não");
+                DataValidationHelper validationHelper = sheet.getDataValidationHelper();
+                String[] opcoes = new String[]{"Sim", "Não"};
+                DataValidationConstraint constraint = validationHelper.createExplicitListConstraint(opcoes);
+                CellRangeAddressList intervalo = new CellRangeAddressList(index, index, 7,7);
+                DataValidation validacao = validationHelper.createValidation(constraint, intervalo);
+                sheet.addValidationData(validacao);
+
+                if (index % 2 == 0) {
+                    concluido.setCellStyle(valuesTableTwoEven);
+                } else {
+                    concluido.setCellStyle(valuesTableTwoOdd);
+                }
+
+                //Link do video
+                Cell link = newRow.createCell(8);
+                link.setCellValue(response.treino().getExercicios().get(exercicios).getExercicio().getLinkVideo());
+                if (index % 2 == 0) {
+                    link.setCellStyle(valuesTableTwoEven);
+                } else {
+                    link.setCellStyle(valuesTableTwoOdd);
+                }
+
+                //Observacoes
+                Cell observacoes = newRow.createCell(9);
+                if (response.treino().getExercicios().get(exercicios).getObservacao() != null) {
+                    observacoes.setCellValue(response.treino().getExercicios().get(exercicios).getObservacao());
+                } else {
+                    observacoes.setCellValue("");
+                }
+                if (index % 2 == 0) {
+                    observacoes.setCellStyle(valuesTableTwoEven);
+                } else {
+                    observacoes.setCellStyle(valuesTableTwoOdd);
+                }
+
+                exercicios++;
+            }
+
+            int[] colunas = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+            int padding = 3 * 256;
+            int larguraMinima = 10 * 256;
+            int larguraMaxima = 50 * 256;
+
+            for (int col : colunas) {
+                sheet.autoSizeColumn(col);
+                int largura = sheet.getColumnWidth(col) + padding;
+                largura = Math.max(larguraMinima, Math.min(largura, larguraMaxima));
+                sheet.setColumnWidth(col, largura);
             }
 
 

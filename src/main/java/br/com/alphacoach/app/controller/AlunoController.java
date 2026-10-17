@@ -74,7 +74,7 @@ public class AlunoController {
         return ResponseEntity.notFound().build();
     }
 
-    @PatchMapping("/{id}/recuperarAluno")
+    @PatchMapping("/{id}/recuperar")
     public ResponseEntity<AlunoResponse> recuperarAluno(@PathVariable Long id) {
         AlunoResponse recuperado = service.recuperarAluno(id);
         if (recuperado != null) {
