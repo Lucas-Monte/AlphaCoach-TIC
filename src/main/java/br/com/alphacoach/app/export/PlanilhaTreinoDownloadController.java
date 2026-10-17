@@ -45,7 +45,7 @@ public class PlanilhaTreinoDownloadController {
             Cell cell = header.createCell(0);
             cell.setCellValue("ALPHACOACH - FICHA DE TREINO");
             //Mesclado células
-            CellRangeAddress regiao = new CellRangeAddress(0,0,0,10);
+            CellRangeAddress regiao = new CellRangeAddress(0,0,0,8);
             sheet.addMergedRegion(regiao);
             //estilizando a celula
             CellStyle styleHeader = wb.createCellStyle();
@@ -251,23 +251,23 @@ public class PlanilhaTreinoDownloadController {
             tDescanso.setCellStyle(titlesTableTwo);
             tDescanso.setCellValue("Descanso (em segundos)");
             //Potencia
-            Cell tPotencia = titlesTableTwoRow.createCell(5);
-            tPotencia.setCellStyle(titlesTableTwo);
-            tPotencia.setCellValue("Potência");
+//            Cell tPotencia = titlesTableTwoRow.createCell(5);
+//            tPotencia.setCellStyle(titlesTableTwo);
+//            tPotencia.setCellValue("Potência");
             //Intensidade
-            Cell tIntensidade = titlesTableTwoRow.createCell(6);
+            Cell tIntensidade = titlesTableTwoRow.createCell(5);
             tIntensidade.setCellStyle(titlesTableTwo);
             tIntensidade.setCellValue("Intensidade");
             //Concluido (com opção de alteração)
-            Cell tConcluido = titlesTableTwoRow.createCell(7);
+            Cell tConcluido = titlesTableTwoRow.createCell(6);
             tConcluido.setCellStyle(titlesTableTwo);
             tConcluido.setCellValue("Concluído");
             //link do video
-            Cell tLink = titlesTableTwoRow.createCell(8);
+            Cell tLink = titlesTableTwoRow.createCell(7);
             tLink.setCellStyle(titlesTableTwo);
             tLink.setCellValue("Link do vídeo");
             //observações
-            Cell tObservacoes = titlesTableTwoRow.createCell(9);
+            Cell tObservacoes = titlesTableTwoRow.createCell(8);
             tObservacoes.setCellStyle(titlesTableTwo);
             tObservacoes.setCellValue("Observações");
 
@@ -331,22 +331,22 @@ public class PlanilhaTreinoDownloadController {
                     descanso.setCellStyle(valuesTableTwoOdd);
                 }
 
-                //Potencia
-                Cell potencia = newRow.createCell(5);
-                if (response.treino().getExercicios().get(exercicios).getPotencia() != null) {
-                    potencia.setCellValue(response.treino().getExercicios().get(exercicios).getPotencia());
-                } else {
-                    potencia.setCellValue("");
-                }
-
-                if (index % 2 == 0) {
-                    potencia.setCellStyle(valuesTableTwoEven);
-                } else {
-                    potencia.setCellStyle(valuesTableTwoOdd);
-                }
+//                //Potencia
+//                Cell potencia = newRow.createCell(5);
+//                if (response.treino().getExercicios().get(exercicios).getPotencia() != null) {
+//                    potencia.setCellValue(response.treino().getExercicios().get(exercicios).getPotencia());
+//                } else {
+//                    potencia.setCellValue("");
+//                }
+//
+//                if (index % 2 == 0) {
+//                    potencia.setCellStyle(valuesTableTwoEven);
+//                } else {
+//                    potencia.setCellStyle(valuesTableTwoOdd);
+//                }
 
                 //Intensidade
-                Cell intensidade = newRow.createCell(6);
+                Cell intensidade = newRow.createCell(5);
                 if (response.treino().getExercicios().get(exercicios).getIntensidade() != null) {
                     intensidade.setCellValue(response.treino().getExercicios().get(exercicios).getIntensidade());
                 } else {
@@ -360,12 +360,12 @@ public class PlanilhaTreinoDownloadController {
                 }
 
                 //Concluido
-                Cell concluido = newRow.createCell(7);
+                Cell concluido = newRow.createCell(6);
                 concluido.setCellValue("Não");
                 DataValidationHelper validationHelper = sheet.getDataValidationHelper();
                 String[] opcoes = new String[]{"Sim", "Não"};
                 DataValidationConstraint constraint = validationHelper.createExplicitListConstraint(opcoes);
-                CellRangeAddressList intervalo = new CellRangeAddressList(index, index, 7,7);
+                CellRangeAddressList intervalo = new CellRangeAddressList(index, index, 6,6);
                 DataValidation validacao = validationHelper.createValidation(constraint, intervalo);
                 sheet.addValidationData(validacao);
 
@@ -376,7 +376,7 @@ public class PlanilhaTreinoDownloadController {
                 }
 
                 //Link do video
-                Cell link = newRow.createCell(8);
+                Cell link = newRow.createCell(7);
                 link.setCellValue(response.treino().getExercicios().get(exercicios).getExercicio().getLinkVideo());
                 if (index % 2 == 0) {
                     link.setCellStyle(valuesTableTwoEven);
@@ -385,7 +385,7 @@ public class PlanilhaTreinoDownloadController {
                 }
 
                 //Observacoes
-                Cell observacoes = newRow.createCell(9);
+                Cell observacoes = newRow.createCell(8);
                 if (response.treino().getExercicios().get(exercicios).getObservacao() != null) {
                     observacoes.setCellValue(response.treino().getExercicios().get(exercicios).getObservacao());
                 } else {
@@ -400,7 +400,7 @@ public class PlanilhaTreinoDownloadController {
                 exercicios++;
             }
 
-            int[] colunas = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+            int[] colunas = {0, 1, 2, 3, 4, 5, 6, 7, 8};
             int padding = 3 * 256;
             int larguraMinima = 10 * 256;
             int larguraMaxima = 50 * 256;
