@@ -37,6 +37,7 @@ public class AlunoService {
         novo.setAnamnese(request.anamnese());
         novo.setAtivo(true);
         novo.setTipoAluno(request.tipoAluno());
+        novo.setEndereco(request.endereco());
         repository.save(novo);
         return new AlunoResponse(novo.getId(),novo.getNome(), novo.getEmail(), novo.getTipoAluno(), novo.getObjetivo(), novo.getAnamnese(), novo.getAtivo());
     }

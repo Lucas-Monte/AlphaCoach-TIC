@@ -29,7 +29,7 @@ public class ExercicioTreino {
     private Integer series;
     @Column
     private Integer repeticoes;
-    @Column(length = 20)
+    @Column(length = 100)
     private String carga;
     @Column
     private Integer tempoDescanso;
